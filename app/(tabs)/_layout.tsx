@@ -1,45 +1,61 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
-
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+import {
+  CalenderIcon,
+  CategoryIcon,
+  HomeIcon,
+  SettingsIcon,
+  TodoListIcon,
+} from "@/assets";
+import TabBarBackground from "@/components/ui/TabBarBackground";
+import { Tabs } from "expo-router";
+import React from "react";
+import { Platform, TouchableOpacity, ViewStyle } from "react-native";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const tabBarStyle: ViewStyle = {
+    justifyContent: "center",
+    alignItems: "center",
+    height: Platform.OS === "ios" ? 110 : 70,
+    paddingTop: 10,
+    paddingBottom: 30,
+    position: "absolute",
+    backgroundColor: "white",
+    borderTopWidth: 0,
+  };
+
+  const TAB_ITEMS = [
+    { name: "home", icon: HomeIcon },
+    { name: "todos", icon: TodoListIcon },
+    { name: "calender", icon: CalenderIcon },
+    { name: "category", icon: CategoryIcon },
+    { name: "settings", icon: SettingsIcon },
+  ];
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarButton: (props: any) => (
+          <TouchableOpacity {...props} activeOpacity={1} />
+        ),
         headerShown: false,
-        tabBarButton: HapticTab,
+        tabBarShowLabel: false,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
+          ios: tabBarStyle,
+          default: tabBarStyle,
         }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
+      }}
+    >
+      {TAB_ITEMS.map(({ name, icon: Icon }) => (
+        <Tabs.Screen
+          key={name}
+          name={name}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <Icon width={24} height={24} color={focused ? "#000" : "#999"} />
+            ),
+          }}
+        />
+      ))}
     </Tabs>
   );
 }
