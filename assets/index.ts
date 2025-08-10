@@ -7,12 +7,20 @@ import FlagIcon from "./icons/flag.svg";
 import Flag2 from "./icons/flag2.svg";
 import GoogleIcon from "./icons/googleIcon.svg";
 import HomeIcon from "./icons/Home.svg";
+import Key from "./icons/key.svg";
+import Logout from "./icons/logout.svg";
+import MagicPen from "./icons/magicpen.svg";
+import MetalStar from "./icons/medal-star.svg";
+import MessageQuestion from "./icons/message-question.svg";
 import MessageIcon from "./icons/Message.svg";
 import SettingsIcon from "./icons/paper-plus.svg";
 import PlusIcon from "./icons/Plus.svg";
+import Profile from "./icons/Profile.svg";
 import Search from "./icons/search-normal.svg";
 import SendIcon from "./icons/send.svg";
 import Setting from "./icons/Setting.svg";
+import Sun from "./icons/sun.svg";
+import Weight from "./icons/weight.svg";
 
 export {
   CalenderIcon,
@@ -23,11 +31,19 @@ export {
   FlagIcon,
   GoogleIcon,
   HomeIcon,
+  Key,
+  Logout,
+  MagicPen,
   MessageIcon,
+  MessageQuestion,
+  MetalStar,
   PlusIcon,
+  Profile,
   Search,
   SendIcon,
   Setting,
   SettingsIcon,
+  Sun,
   TodoListIcon,
+  Weight,
 };

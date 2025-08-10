@@ -14,10 +14,7 @@ module.exports = {
       colors: {
         background: "#ffffff",
         // black: "hsla(228, 6%, 11%, 1)",
-        teal: "hsla(178, 63%, 39%, 1)",
-        black: "hsla(225, 7%, 11%, 1)",
-        red: "hsla(5, 81%, 56%, 1)",
-        blue: "hsla(214, 89%, 52%, 1)",
+
         // secondary: "hsla(218, 9%, 51%, 1)",
         // card: {
         //   DEFAULT: "hsl(0 0% 100%)",
@@ -33,7 +30,7 @@ module.exports = {
         },
         secondary: {
           DEFAULT: "hsl(218, 9%, 51%)",
-          // foreground: "hsl(220.9 39.3% 11%)",
+          foreground: "hsl(217, 27%, 90%)",
         },
         // secondary: "hsl(319, 30%, 16%)",
         muted: {

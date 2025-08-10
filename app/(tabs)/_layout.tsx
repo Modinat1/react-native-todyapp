@@ -4,11 +4,12 @@ import {
   HomeIcon,
   SettingsIcon,
   TodoListIcon,
-} from "@/assets";
+} from "@/assets/svgs/svg";
+import { colors } from "@/colorSettings";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform, TouchableOpacity, ViewStyle } from "react-native";
+import { Platform, TouchableOpacity, View, ViewStyle } from "react-native";
 
 export default function TabLayout() {
   const tabBarStyle: ViewStyle = {
@@ -34,7 +35,11 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarButton: (props: any) => (
-          <TouchableOpacity {...props} activeOpacity={1} />
+          <TouchableOpacity
+            {...props}
+            activeOpacity={1}
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          />
         ),
         headerShown: false,
         tabBarShowLabel: false,
@@ -51,7 +56,23 @@ export default function TabLayout() {
           name={name}
           options={{
             tabBarIcon: ({ focused }) => (
-              <Icon width={24} height={24} color={focused ? "#000" : "#999"} />
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderTopWidth: focused ? 3 : 0,
+                  borderTopColor: focused
+                    ? colors.primary.DEFAULT
+                    : "transparent",
+                  paddingTop: 6,
+                }}
+              >
+                <Icon
+                  width={24}
+                  height={24}
+                  color={focused ? colors.primary.DEFAULT : "#A0AAB8"}
+                />
+              </View>
             ),
           }}
         />

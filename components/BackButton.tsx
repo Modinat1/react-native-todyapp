@@ -1,4 +1,4 @@
-import { Feather } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import { TouchableOpacity } from "react-native";
@@ -10,7 +10,7 @@ const BackButton = ({
 }) => {
   return (
     <TouchableOpacity onPress={onPress}>
-      <Feather name="arrow-left" size={24} color={"black"} />
+      <AntDesign name="left" size={24} color="black" />
     </TouchableOpacity>
   );
 };

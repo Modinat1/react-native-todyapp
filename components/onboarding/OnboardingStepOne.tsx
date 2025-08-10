@@ -1,8 +1,16 @@
 import Logo from "@/assets/images/Logo-Onboarding.svg";
 import React from "react";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
-const OnboardingStepOne = () => {
+interface OnboardingStepOneProps {
+  currentIndex: number;
+  totalSteps: number;
+}
+
+const OnboardingStepOne = ({
+  currentIndex,
+  totalSteps,
+}: OnboardingStepOneProps) => {
   return (
     <View className="bg-primary flex-1 items-center justify-center">
       <Logo />
@@ -11,10 +19,47 @@ const OnboardingStepOne = () => {
         The best to do list application for you
       </Text>
 
-      <View className={`w-2 h-2 rounded-full bg-white mx-1 mt-5 `}></View>
-      {/* <View className={`w-2 h-2 rounded-full bg-white mx-1 `}></View> */}
+      {/* Bottom area with indicator + button */}
+      <View style={styles.bottomContainer}>
+        <View style={styles.indicatorContainer}>
+          {Array.from({ length: totalSteps }).map((_, index) => {
+            const isActive = index === currentIndex;
+            return (
+              <View
+                key={index}
+                style={[styles.dot, isActive && styles.activeDot]}
+              />
+            );
+          })}
+        </View>
+      </View>
     </View>
   );
 };
 
 export default OnboardingStepOne;
+
+const styles = StyleSheet.create({
+  bottomContainer: {
+    padding: 20,
+  },
+  indicatorContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 30,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#ffffff",
+    marginHorizontal: 4,
+  },
+  activeDot: {
+    backgroundColor: "#ffffff",
+    width: 24,
+    height: 8,
+    borderRadius: 4,
+  },
+});
