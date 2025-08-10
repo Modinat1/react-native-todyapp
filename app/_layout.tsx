@@ -13,6 +13,7 @@ import "../global.css";
 import { GlobalBottomSheet } from "@/components/GlobalBottomSheet";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import Toast from "react-native-toast-message";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -37,7 +38,9 @@ export default function RootLayout() {
             <Stack.Screen name="+not-found" />
           </Stack>
           <GlobalBottomSheet />
+          <Toast />
         </BottomSheetModalProvider>
+
         <StatusBar style="auto" />
       </ThemeProvider>
     </GestureHandlerRootView>

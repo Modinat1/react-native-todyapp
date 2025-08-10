@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import { PlusIcon } from "@/assets";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useAppStore } from "../store/store";
@@ -15,13 +15,23 @@ const EmptyTodoCard = ({ onPress }: { onPress: () => void }) => {
       <View style={[styles.header, { backgroundColor: selectedTheme.color }]} />
       <View style={styles.body}>
         <View style={styles.row}>
-          <Ionicons
-            name="add-circle-outline"
-            size={20}
-            color={selectedTheme.color}
-          />
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: selectedTheme.color,
+              width: 24,
+              height: 24,
+              borderRadius: 6,
+              shadowRadius: 4,
+            }}
+          >
+            <PlusIcon width={15} height={15} />
+          </View>
+
           <Text style={styles.title}>Tap plus to create a new task</Text>
         </View>
+        <View className="border-b border-border my-5 w-full"></View>
         <View style={styles.footer}>
           <Text style={styles.subText}>Add your task</Text>
           <Text style={styles.subText}>Today · Mon 20 Jul 2022</Text>

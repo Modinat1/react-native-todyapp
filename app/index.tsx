@@ -1,12 +1,8 @@
-import OnboardingStepFour from "@/components/onboarding/OnboardingStepFour";
+import OnboardingScreens from "@/components/onboarding/OnboardingScreens";
 import React from "react";
 
 const Onboarding = () => {
-  return (
-    // <View>
-    <OnboardingStepFour />
-    // </View>
-  );
+  return <OnboardingScreens />;
 };
 
 export default Onboarding;

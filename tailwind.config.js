@@ -45,7 +45,7 @@ module.exports = {
           foreground: "hsl(225, 19%, 72%)",
         },
         destructive: {
-          DEFAULT: "hsl(0 84.2% 60.2%)",
+          DEFAULT: "hsl(5, 81%, 56%)",
           foreground: "hsl(210 20% 98%)",
           background: "hsl(0, 100%, 88%)",
           "background-light": "hsl(0, 100%, 96%)",

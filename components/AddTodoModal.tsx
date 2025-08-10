@@ -8,7 +8,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import EmojiSelector from "react-native-emoji-selector";
+// import EmojiSelector from "react-native-emoji-selector";
+import {
+  CalenderIcon,
+  ClockIcon,
+  FlagIcon,
+  SendIcon,
+  TodoListIcon,
+} from "@/assets";
+import Toast from "react-native-toast-message";
 import { useAppStore } from "../store/store";
 
 type AddTodoModalProps = {
@@ -17,20 +25,21 @@ type AddTodoModalProps = {
 };
 
 export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
-  const { addTodo, selectedTheme } = useAppStore();
-
+  const { addTodo } = useAppStore();
   const [task, setTask] = useState("");
   const [description, setDescription] = useState("");
-  const [showEmojis, setShowEmojis] = useState(false);
+  //   const [showEmojis, setShowEmojis] = useState(false);
 
   const handleAdd = () => {
-    if (task.trim()) {
-      addTodo(task);
-      setTask("");
-      setDescription("");
-      setShowEmojis(false);
-      onClose();
-    }
+    if (!task.trim()) return;
+    addTodo(task);
+    setTask("");
+    Toast.show({
+      type: "success",
+      text1: "Todo added successfully ✅",
+      visibilityTime: 2000,
+    });
+    onClose();
   };
 
   return (
@@ -42,7 +51,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
       <View style={styles.container}>
         {/* Task input */}
         <TextInput
-          placeholder="Eg: Meeting with client"
+          placeholder="eg: Meeting with client"
           value={task}
           onChangeText={setTask}
           style={styles.input}
@@ -57,24 +66,31 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
           multiline
         />
 
+        {/* Add button */}
+
+        <View className="flex-row justify-between items-center border-b pb-5 border-border">
+          <View className="flex-row items-center gap-3">
+            <TodoListIcon />
+            <CalenderIcon />
+            <ClockIcon />
+            <FlagIcon />
+          </View>
+
+          <TouchableOpacity onPress={handleAdd}>
+            <SendIcon />
+          </TouchableOpacity>
+        </View>
+
         {/* Toggle emoji picker */}
         <TouchableOpacity
-          onPress={() => setShowEmojis((prev) => !prev)}
+          //   onPress={() => setShowEmojis((prev) => !prev)}
           style={styles.emojiButton}
         >
           <Text style={{ fontSize: 24 }}>😊</Text>
         </TouchableOpacity>
 
-        {/* Add button */}
-        <TouchableOpacity
-          style={[styles.addButton, { backgroundColor: selectedTheme.color }]}
-          onPress={handleAdd}
-        >
-          <Text style={{ color: "white", fontWeight: "600" }}>Add</Text>
-        </TouchableOpacity>
-
         {/* Emoji Picker */}
-        {showEmojis && (
+        {/* {showEmojis && (
           <View style={{ height: 250 }}>
             <EmojiSelector
               onEmojiSelected={(emoji) => setTask((prev) => prev + emoji)}
@@ -82,10 +98,9 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
               showTabs={true}
             />
           </View>
-        )}
+        )} */}
       </View>
     </KeyboardAvoidingView>
-    // </Modal>
   );
 }
 
@@ -93,7 +108,7 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0,0,0,0.2)",
+    // backgroundColor: "rgba(0,0,0,0.2)",
   },
   container: {
     backgroundColor: "white",
@@ -102,7 +117,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16,
   },
   input: {
-    borderBottomWidth: 1,
+    // borderBottomWidth: 1,
     borderBottomColor: "#ccc",
     paddingVertical: 8,
     fontSize: 16,
