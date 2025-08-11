@@ -70,3 +70,25 @@ The app features a **tab-based navigation** layout, todo filtering, and a clean,
 - Axios-based service layer for API requests.
 
 - React Query for api consumption and caching.
+
+# Home of screenshot
+
+![Home of screenshot](./assets/screenshot/home-screenshot.jpg)
+
+- when the settings icon on this page is clicked, it navigates to the settings page, showing the user's data from the Api
+
+# Navigation to the inprogresss and completed todos
+
+![Projects screenshot](./assets/screenshot/project-page.jpg)
+
+- click on the "Try boards" list, it navigates to pages, to filter by in-progress and completed todos
+
+# Filtering screenshot
+
+![Projects screenshot](./assets/screenshot/inprogress-todos.jpg)
+
+- clicking on the three vertical dots pops up the view to filter
+
+# Setting screenshot
+
+![Projects screenshot](./assets/screenshot/settings-page.jpg)

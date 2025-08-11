@@ -7,6 +7,11 @@ export class TodoServices {
     return response;
   }
 
+  static async getUserTodos(userId: number) {
+    const response = await axios.get(TODO_ENDPOINTS.GET_TODOS_BY_USER(userId));
+    return response;
+  }
+
   static async postTodo(credentials: any) {
     const response = await axios.post(TODO_ENDPOINTS.POST_TODO, credentials);
     return response;

@@ -2,18 +2,24 @@ import { PlusIcon, Search } from "@/assets";
 import BackButton from "@/components/BackButton";
 import Container from "@/components/Container";
 // import { useAppStore } from "@/store/store";
-import { useGetTodos } from "@/api/hooks/todo";
+// import { useGetTodos } from "@/api/hooks/todo";
+import { useGetUserTodos } from "@/api/hooks/todo";
 import { colors } from "@/colorSettings";
 import Card from "@/components/Card";
-import { ActivityIndicator, Text, View } from "react-native";
+import useAuthStore from "@/store/features/useAuthStore";
+import { useRouter } from "expo-router";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 const TodoList = () => {
-  const { data, isLoading } = useGetTodos();
-  // console.log("TODOS AGAIN:::::::", JSON.stringify(data, null, 2));
+  const router = useRouter();
+  const { userId } = useAuthStore();
+  // const { data, isLoading } = useGetTodos();
+  const { data, isLoading } = useGetUserTodos(userId ?? 0);
+  // console.log("USER TODOS:::::::", JSON.stringify(data, null, 2));
 
   const TodoData = data?.todos || [];
   // const { todos } = useAppStore();
-
+  // const sortedTodos = TodoData ? [...TodoData].sort((a, b) => b.id - a.id) : [];
   return (
     <Container>
       <View className="flex-row justify-between items-center my-5">
@@ -35,32 +41,31 @@ const TodoList = () => {
         </View>
       ) : (
         <Card data={TodoData} />
+        // <Card data={sortedTodos} />
       )}
 
-      <View className="flex justify-center items-center bg-primary w-12 h-12 rounded-full">
-        <PlusIcon />
-      </View>
-
-      <View
-        style={{
-          position: "absolute",
-          bottom: 20,
-          right: 20,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#18A999",
-          width: 48,
-          height: 48,
-          borderRadius: 999,
-          elevation: 5,
-          shadowColor: "#000",
-          shadowOpacity: 0.1,
-          shadowRadius: 4,
-          shadowOffset: { width: 0, height: 2 },
-        }}
-      >
-        <PlusIcon />
-      </View>
+      <TouchableOpacity onPress={() => router.push("/(tabs)/home")}>
+        <View
+          style={{
+            position: "fixed",
+            bottom: 100,
+            left: 250,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#18A999",
+            width: 48,
+            height: 48,
+            borderRadius: 999,
+            elevation: 5,
+            shadowColor: "#000",
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
+            shadowOffset: { width: 0, height: 2 },
+          }}
+        >
+          <PlusIcon />
+        </View>
+      </TouchableOpacity>
     </Container>
   );
 };

@@ -20,3 +20,12 @@ export const useGetTodos = () =>
       return res.data;
     },
   });
+
+export const useGetUserTodos = (userId: number) =>
+  useQuery<TodosResponse>({
+    queryKey: ["todos"],
+    queryFn: async () => {
+      const res = await TodoServices.getUserTodos(userId);
+      return res.data;
+    },
+  });

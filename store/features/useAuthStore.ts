@@ -11,6 +11,7 @@ interface AuthState {
   image: any | null;
   token: string | null;
   isAuthenticated: boolean;
+  userId: number | null;
 }
 
 interface AuthAction {
@@ -24,6 +25,7 @@ type PersistAuthStore = AuthState & AuthAction;
 const useAuthStore = create<PersistAuthStore>()(
   persist(
     (set) => ({
+      userId: null,
       username: null,
       email: null,
       firstName: null,
@@ -45,6 +47,7 @@ const useAuthStore = create<PersistAuthStore>()(
 
       logout: () =>
         set({
+          userId: null,
           username: null,
           email: null,
           firstName: null,

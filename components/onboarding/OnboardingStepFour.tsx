@@ -22,11 +22,10 @@ const OnboardingStepFour = () => {
           <View className=" ">
             <Button
               onPress={() => router.push("/(auth)/login")}
-              className="items-center gap-3 text-white"
-              textClassName="text-white"
+              className="items-center gap-3"
             >
               <MessageIcon />
-              <Text>Continue with email</Text>
+              <Text className="text-white"> Continue with email</Text>
             </Button>
 
             <View className="flex-row items-center my-3">

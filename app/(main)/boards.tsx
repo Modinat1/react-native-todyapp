@@ -1,16 +1,19 @@
-import { useGetTodos } from "@/api/hooks/todo";
+import { useGetUserTodos } from "@/api/hooks/todo";
 import { Search } from "@/assets";
 import { colors } from "@/colorSettings";
 import BackButton from "@/components/BackButton";
 import Card from "@/components/Card";
 import Container from "@/components/Container";
 import { Todo } from "@/lib/types";
+import useAuthStore from "@/store/features/useAuthStore";
 import Entypo from "@expo/vector-icons/Entypo";
 import React, { useState } from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 const Boards = () => {
-  const { data, isLoading } = useGetTodos();
+  const { userId } = useAuthStore();
+  // const { data, isLoading } = useGetTodos();
+  const { data, isLoading } = useGetUserTodos(userId ?? 0);
   const [filter, setFilter] = useState<"inProgress" | "completed">(
     "inProgress"
   );

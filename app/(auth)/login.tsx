@@ -19,10 +19,10 @@ const Login = () => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (data: any) => AuthService.signIn(data),
     onSuccess: async (data: any) => {
-      // console.log(
-      //   "Data from login:::::::::",
-      //   JSON.stringify(data.data, null, 2)
-      // );
+      console.log(
+        "Data from login:::::::::",
+        JSON.stringify(data.data, null, 2)
+      );
 
       login(
         {
@@ -32,6 +32,7 @@ const Login = () => {
           email: data.data.email,
           gender: data.data.gender,
           image: data.data.image,
+          userId: data.data.id,
         },
         data.accessToken
       );
