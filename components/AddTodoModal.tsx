@@ -1,14 +1,3 @@
-import React, { useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-// import EmojiSelector from "react-native-emoji-selector";
 import { TodoServices } from "@/api/services/todoServices";
 import {
   CalenderIcon,
@@ -19,6 +8,16 @@ import {
 } from "@/assets";
 import useAuthStore from "@/store/features/useAuthStore";
 import { useMutation } from "@tanstack/react-query";
+// import EmojiPicker from "react-native-emoji-picker";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-toast-message";
 import { useAppStore } from "../store/store";
 
@@ -37,6 +36,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
   const [isDone, setIsDone] = useState(false);
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
+  // const [showEmojis, setShowEmojis] = useState(false);
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (payload: {
@@ -97,9 +97,10 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      style={styles.overlay}
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.overlay}
+      keyboardShouldPersistTaps="handled"
+      enableOnAndroid={true}
     >
       <View style={styles.container}>
         {/* Task input */}
@@ -109,7 +110,6 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
           onChangeText={setTask}
           style={styles.input}
         />
-
         {/* Description */}
         <TextInput
           placeholder="Description"
@@ -118,10 +118,9 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
           style={styles.input}
           multiline
         />
-
         {/* Add button */}
-        <View className="flex-row justify-between items-center border-b pb-5 border-border">
-          <View className="flex-row items-center gap-3">
+        <View className="flex-row justify-between items-center border-b pb-5 border-secondary-foreground">
+          <View className="flex-row items-center gap-5">
             <TodoListIcon />
             <CalenderIcon />
             <ClockIcon />
@@ -133,107 +132,23 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
           </TouchableOpacity>
         </View>
 
-        {/* Toggle emoji picker */}
         <TouchableOpacity
-          //   onPress={() => setShowEmojis((prev) => !prev)}
+          // onPress={() => setShowEmojis((prev) => !prev)}
           style={styles.emojiButton}
         >
           <Text style={{ fontSize: 24 }}>😊</Text>
         </TouchableOpacity>
-
+        {/* <EmojiPicker /> */}
         <Text>{error}</Text>
-
-        {/* Emoji button etc. omitted for brevity */}
       </View>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 }
-
-// export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
-//   const { addTodo } = useAppStore();
-//   const [task, setTask] = useState("");
-//   const [description, setDescription] = useState("");
-//   //   const [showEmojis, setShowEmojis] = useState(false);
-
-//   const handleAdd = () => {
-//     if (!task.trim()) return;
-//     addTodo(task);
-//     setTask("");
-//     Toast.show({
-//       type: "success",
-//       text1: "Todo added successfully ✅",
-//       visibilityTime: 2000,
-//     });
-//     onClose();
-//   };
-
-//   return (
-//     // <Modal animationType="slide" visible={visible} transparent>
-//     <KeyboardAvoidingView
-//       behavior={Platform.OS === "ios" ? "padding" : undefined}
-//       style={styles.overlay}
-//     >
-//       <View style={styles.container}>
-//         {/* Task input */}
-//         <TextInput
-//           placeholder="eg: Meeting with client"
-//           value={task}
-//           onChangeText={setTask}
-//           style={styles.input}
-//         />
-
-//         {/* Description */}
-//         <TextInput
-//           placeholder="Description"
-//           value={description}
-//           onChangeText={setDescription}
-//           style={styles.input}
-//           multiline
-//         />
-
-//         {/* Add button */}
-
-//         <View className="flex-row justify-between items-center border-b pb-5 border-border">
-//           <View className="flex-row items-center gap-3">
-//             <TodoListIcon />
-//             <CalenderIcon />
-//             <ClockIcon />
-//             <FlagIcon />
-//           </View>
-
-//           <TouchableOpacity onPress={handleAdd}>
-//             <SendIcon />
-//           </TouchableOpacity>
-//         </View>
-
-// {/* Toggle emoji picker */}
-// <TouchableOpacity
-//   //   onPress={() => setShowEmojis((prev) => !prev)}
-//   style={styles.emojiButton}
-// >
-//   <Text style={{ fontSize: 24 }}>😊</Text>
-// </TouchableOpacity>
-
-//         {/* Emoji Picker */}
-//         {/* {showEmojis && (
-//           <View style={{ height: 250 }}>
-//             <EmojiSelector
-//               onEmojiSelected={(emoji) => setTask((prev) => prev + emoji)}
-//               showSearchBar={false}
-//               showTabs={true}
-//             />
-//           </View>
-//         )} */}
-//       </View>
-//     </KeyboardAvoidingView>
-//   );
-// }
 
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: "flex-end",
-    // backgroundColor: "rgba(0,0,0,0.2)",
   },
   container: {
     backgroundColor: "white",
@@ -242,7 +157,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 16,
   },
   input: {
-    // borderBottomWidth: 1,
     borderBottomColor: "#ccc",
     paddingVertical: 8,
     fontSize: 16,

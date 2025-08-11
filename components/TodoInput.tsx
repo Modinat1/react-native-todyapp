@@ -10,7 +10,7 @@ const TodoApp = () => {
 
   const showModal = () => {
     openSheet({
-      snapPoints: ["80%"],
+      snapPoints: ["60%"],
       content: (
         <AddTodoModal
           visible={true}

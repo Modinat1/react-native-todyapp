@@ -1,20 +1,19 @@
+import { useGetTodos } from "@/api/hooks/todo";
 import { PlusIcon, Search } from "@/assets";
 import BackButton from "@/components/BackButton";
 import Container from "@/components/Container";
-// import { useAppStore } from "@/store/store";
-// import { useGetTodos } from "@/api/hooks/todo";
-import { useGetUserTodos } from "@/api/hooks/todo";
+// import { useGetUserTodos } from "@/api/hooks/todo";
 import { colors } from "@/colorSettings";
 import Card from "@/components/Card";
-import useAuthStore from "@/store/features/useAuthStore";
+// import useAuthStore from "@/store/features/useAuthStore";
 import { useRouter } from "expo-router";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 const TodoList = () => {
   const router = useRouter();
-  const { userId } = useAuthStore();
-  // const { data, isLoading } = useGetTodos();
-  const { data, isLoading } = useGetUserTodos(userId ?? 0);
+  // const { userId } = useAuthStore();
+  const { data, isLoading } = useGetTodos();
+  // const { data, isLoading } = useGetUserTodos(userId ?? 0);
   // console.log("USER TODOS:::::::", JSON.stringify(data, null, 2));
 
   const TodoData = data?.todos || [];
