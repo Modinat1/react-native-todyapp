@@ -28,7 +28,8 @@ export default function TabLayout() {
     { name: "todos", icon: TodoListIcon },
     { name: "calender", icon: CalenderIcon },
     { name: "category", icon: CategoryIcon },
-    { name: "settings", icon: SettingsIcon },
+    { name: "project", icon: SettingsIcon },
+    // { name: "settings", icon: SettingsIcon },
   ];
 
   return (
@@ -64,7 +65,9 @@ export default function TabLayout() {
                   borderTopColor: focused
                     ? colors.primary.DEFAULT
                     : "transparent",
-                  paddingTop: 6,
+                  paddingTop: 10,
+                  marginTop: -22,
+                  width: "100%",
                 }}
               >
                 <Icon

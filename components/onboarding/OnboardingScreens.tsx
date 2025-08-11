@@ -15,7 +15,7 @@ const OnboardingScreens = () => {
     {
       id: "1",
       component: (
-        <OnboardingStepOne currentIndex={currentIndex} totalSteps={4} />
+        <OnboardingStepOne currentIndex={currentIndex} totalSteps={3} />
       ),
     },
     {
@@ -24,7 +24,7 @@ const OnboardingScreens = () => {
         <OnboardingStepTwo
           goToNext={goToNext}
           currentIndex={currentIndex}
-          totalSteps={4}
+          totalSteps={3}
         />
       ),
     },
@@ -34,7 +34,7 @@ const OnboardingScreens = () => {
         <OnboardingStepThree
           goToNext={goToNext}
           currentIndex={currentIndex}
-          totalSteps={4}
+          totalSteps={3}
         />
       ),
     },
@@ -67,27 +67,6 @@ const OnboardingScreens = () => {
         )}
         style={{ flex: 1 }}
       />
-
-      {/* Bottom section with indicator and button */}
-      {/* <View style={styles.bottomContainer}>
-        <View style={styles.indicatorContainer}>
-          {steps.map((_, index) => {
-            const isActive = index === currentIndex;
-            return (
-              <View
-                key={index}
-                style={[styles.dot, isActive && styles.activeDot]}
-              />
-            );
-          })}
-        </View> */}
-
-      {/* <TouchableOpacity style={styles.button} onPress={goToNext}>
-          <Text style={styles.buttonText}>
-            {currentIndex === steps.length - 1 ? "Get Started" : "Continue"}
-          </Text>
-        </TouchableOpacity> */}
-      {/* </View> */}
     </View>
   );
 };

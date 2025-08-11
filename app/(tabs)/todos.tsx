@@ -19,19 +19,10 @@ const TodoList = () => {
 
   // const { todos } = useAppStore();
 
-  if (!data?.todos || data.todos.length === 0) {
-    return (
-      <View className="flex-row justify-center items-center h-screen">
-        <Text className="text-base font-semibold">No todos yet 👀</Text>
-      </View>
-    );
-  }
-
   return (
     <Container>
       <View className="flex-row justify-between items-center my-5">
         <BackButton />
-        {/* <AntDesign name="left" size={24} color="black" /> */}
         <Text className="text-black text-xl font-bold"> Inbox</Text>
         <Search />
       </View>
@@ -40,6 +31,12 @@ const TodoList = () => {
         <View className="justify-center items-center h-screen">
           <ActivityIndicator color={colors.primary.DEFAULT} />
           <Text className="text-primary font-medium text-sm">Loading...</Text>
+        </View>
+      ) : data?.todos?.length === 0 ? (
+        <View className="justify-center items-center h-screen">
+          <Text className="text-gray-500 font-medium text-base">
+            No todos yet 👀
+          </Text>
         </View>
       ) : (
         <FlatList
@@ -127,98 +124,6 @@ const TodoList = () => {
             </View>
           )}
         />
-
-        // <FlatList
-        //   data={data?.data}
-        //   keyExtractor={(item) => String(item.id)}
-        //   // contentContainerStyle={{ padding: 16 }}
-        //   renderItem={({ item, index }) => (
-        //     <View style={styles.cardWrapper}>
-        //       {/* Top Bar */}
-        //       <View
-        //         style={[
-        //           styles.topBar,
-        //           { backgroundColor: item.color || "#18A999" },
-        //         ]}
-        //       >
-        //         <Flag2 />
-        //         <Text style={styles.priorityText}>
-        //           Priority task {index + 1}
-        //         </Text>
-        //         <Feather
-        //           name="more-horizontal"
-        //           size={18}
-        //           color="#fff"
-        //           style={{ marginLeft: "auto" }}
-        //         />
-        //       </View>
-
-        //       {/* Body */}
-        //       <View style={styles.cardBody}>
-        //         <View style={styles.titleRow}>
-        //           <View
-        //             style={{
-        //               flexDirection: "row",
-        //               justifyContent: "center",
-        //               alignItems: "center",
-        //               borderWidth: 2,
-        //               borderColor: item.color,
-        //               borderRadius: 999,
-        //               width: 20,
-        //               height: 20,
-        //               padding: 2,
-        //             }}
-        //           >
-        //             <View
-        //               style={{
-        //                 width: 8,
-        //                 height: 8,
-        //                 borderRadius: 999,
-        //                 backgroundColor: item.color,
-        //               }}
-        //             />
-        //           </View>
-
-        //           <Text style={styles.title}>{item.todo}</Text>
-        //         </View>
-
-        //         {/* Divider */}
-        //         <View style={styles.divider} />
-
-        //         {/* Bottom Row */}
-        //         <View style={styles.bottomRow}>
-        //           <View style={styles.iconText}>
-        //             <MaterialCommunityIcons
-        //               name="clock-outline"
-        //               size={16}
-        //               color="red"
-        //             />
-        //             <Text style={styles.time}>08.30 PM</Text>
-        //           </View>
-
-        //           <View style={styles.iconText}>
-        //             <Feather name="message-circle" size={14} color="#888" />
-        //             <Text style={styles.meta}>1</Text>
-        //           </View>
-
-        //           <View style={styles.iconText}>
-        //             <Feather name="repeat" size={14} color="#888" />
-        //             <Text style={styles.meta}>2</Text>
-        //           </View>
-
-        //           <Text style={styles.date}>
-        //             {new Date(Number(item.id)).toLocaleDateString("en-GB", {
-        //               weekday: "short",
-        //               day: "2-digit",
-        //               month: "short",
-        //               year: "numeric",
-        //             })}
-        //           </Text>
-        //         </View>
-        //       </View>
-        //     </View>
-        //   )}
-        // />
       )}
 
       <View className="flex justify-center items-center bg-primary w-12 h-12 rounded-full">

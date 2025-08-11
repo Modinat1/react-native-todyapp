@@ -1,16 +1,12 @@
 import Logo from "@/assets/images/Logo-Onboarding.svg";
+import { OnboardingStepProps } from "@/lib/types";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-
-interface OnboardingStepOneProps {
-  currentIndex: number;
-  totalSteps: number;
-}
 
 const OnboardingStepOne = ({
   currentIndex,
   totalSteps,
-}: OnboardingStepOneProps) => {
+}: OnboardingStepProps) => {
   return (
     <View className="bg-primary flex-1 items-center justify-center">
       <Logo />
