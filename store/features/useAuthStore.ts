@@ -35,7 +35,6 @@ const useAuthStore = create<PersistAuthStore>()(
       token: null,
       isAuthenticated: false,
 
-      // Generic set function
       set: (key, value) => set((state) => ({ ...state, [key]: value })),
 
       login: (userData, token) =>

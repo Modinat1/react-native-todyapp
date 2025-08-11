@@ -15,12 +15,13 @@ export default function TabLayout() {
   const tabBarStyle: ViewStyle = {
     justifyContent: "center",
     alignItems: "center",
-    height: Platform.OS === "ios" ? 110 : 70,
+    height: Platform.OS === "ios" ? 110 : 75,
     paddingTop: 10,
     paddingBottom: 30,
     position: "absolute",
     backgroundColor: "white",
     borderTopWidth: 0,
+    zIndex: 99,
   };
 
   const TAB_ITEMS = [
@@ -29,21 +30,18 @@ export default function TabLayout() {
     { name: "calender", icon: CalenderIcon },
     { name: "category", icon: CategoryIcon },
     { name: "project", icon: SettingsIcon },
-    // { name: "settings", icon: SettingsIcon },
   ];
 
   return (
     <Tabs
       screenOptions={{
         tabBarButton: (props: any) => (
-          <TouchableOpacity
-            {...props}
-            activeOpacity={1}
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-          />
+          <TouchableOpacity {...props} activeOpacity={1} />
         ),
-        headerShown: false,
+        headerPressOpacity: 0.9,
         tabBarShowLabel: false,
+        headerShown: false,
+        // tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: tabBarStyle,
@@ -66,7 +64,7 @@ export default function TabLayout() {
                     ? colors.primary.DEFAULT
                     : "transparent",
                   paddingTop: 10,
-                  marginTop: -22,
+                  marginTop: -27,
                   width: "100%",
                 }}
               >

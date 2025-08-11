@@ -4,7 +4,7 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL: "https://dummyjson.com",
-  // baseURL: EXPO_BASEURL,
+  // baseURL: process.env.EXPO_BASEURL,
   // timeout: 10000,
   headers: {
     "Content-Type": "application/json",

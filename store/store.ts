@@ -8,7 +8,7 @@ type Theme = {
 type Todo = {
   id: number;
   title: string;
-  color: string; // To store theme color at creation time
+  color: string;
 };
 
 type Store = {

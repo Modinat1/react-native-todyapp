@@ -109,6 +109,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
           value={task}
           onChangeText={setTask}
           style={styles.input}
+          placeholderTextColor="#A9B0C5"
         />
         {/* Description */}
         <TextInput
@@ -116,6 +117,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
           value={description}
           onChangeText={setDescription}
           style={styles.input}
+          placeholderTextColor="#A9B0C5"
           multiline
         />
         {/* Add button */}
@@ -135,8 +137,16 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
         <TouchableOpacity
           // onPress={() => setShowEmojis((prev) => !prev)}
           style={styles.emojiButton}
+          className="flex-row gap-3 items-center"
         >
           <Text style={{ fontSize: 24 }}>😊</Text>
+          <Text style={{ fontSize: 24 }}>😂</Text>
+          <Text style={{ fontSize: 24 }}>😇</Text>
+          <Text style={{ fontSize: 24 }}>🙌</Text>
+          <Text style={{ fontSize: 24 }}>👋</Text>
+          <Text style={{ fontSize: 24 }}>😨</Text>
+          <Text style={{ fontSize: 24 }}>✌️</Text>
+          <Text style={{ fontSize: 24 }}>💪</Text>
         </TouchableOpacity>
         {/* <EmojiPicker /> */}
         <Text>{error}</Text>

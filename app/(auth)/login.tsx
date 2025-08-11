@@ -19,10 +19,10 @@ const Login = () => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (data: any) => AuthService.signIn(data),
     onSuccess: async (data: any) => {
-      console.log(
-        "Data from login:::::::::",
-        JSON.stringify(data.data, null, 2)
-      );
+      // console.log(
+      //   "Data from login:::::::::",
+      //   JSON.stringify(data.data, null, 2)
+      // );
 
       login(
         {
@@ -66,7 +66,7 @@ const Login = () => {
 
           <View className="my-5">
             <Text className="text-black font-medium text-base mb-2">
-              UserName
+              Username
             </Text>
             <TextInput
               value={userName}
@@ -75,6 +75,7 @@ const Login = () => {
               keyboardType="email-address"
               className="bg-secondary-foreground border border-border rounded-[6px] p-3"
               placeholder="name@example.com"
+              placeholderTextColor="#A9B0C5"
             />
           </View>
 
@@ -89,6 +90,7 @@ const Login = () => {
                 secureTextEntry={!showPassword}
                 className="flex-1 py-3"
                 placeholder="Enter your password"
+                placeholderTextColor="#A9B0C5"
               />
               <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                 <Feather

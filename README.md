@@ -53,7 +53,9 @@ The app features a **tab-based navigation** layout, todo filtering, and a clean,
 
 - Authentication – Simulated login using DummyJSON Auth API.
 
-- Todos API – Fetch todos from DummyJSON Todos.
+- Fetch Todos API – Fetch todos from DummyJSON Todos.
+
+- Create Todos API - Created todos with the DummyJSON Todos API.
 
 - Filtering – Filtererd todos into In Progress & Completed.
 
@@ -92,3 +94,9 @@ The app features a **tab-based navigation** layout, todo filtering, and a clean,
 # Setting screenshot
 
 ![Projects screenshot](./assets/screenshot/settings-page.jpg)
+
+# Challenges
+
+- DummyJSON api does not align with the figma UI design
+- I could not get the todos I created, because of that, hence the getting of todos with the color theme could not take effect
+- I could only get sample todos from the api, not the ones created from the todo apo frontend

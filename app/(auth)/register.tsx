@@ -21,7 +21,7 @@ const Register = () => {
 
           <View className="mt-5">
             <Text className="text-black font-medium text-base mb-2">
-              UserName
+              Username
             </Text>
             <TextInput
               //   value={userName}
@@ -30,6 +30,7 @@ const Register = () => {
               keyboardType="email-address"
               className="bg-secondary-foreground border border-border rounded-[6px] p-3"
               placeholder="johndoe"
+              placeholderTextColor="#A9B0C5"
             />
           </View>
 
@@ -42,6 +43,7 @@ const Register = () => {
               keyboardType="email-address"
               className="bg-secondary-foreground border border-border rounded-[6px] p-3"
               placeholder="name@example.com"
+              placeholderTextColor="#A9B0C5"
             />
           </View>
 
@@ -54,6 +56,7 @@ const Register = () => {
                 secureTextEntry={!showPassword}
                 className="flex-1 py-3"
                 placeholder="Enter your password"
+                placeholderTextColor="#A9B0C5"
               />
               <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                 <Feather

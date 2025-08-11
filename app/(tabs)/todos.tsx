@@ -47,7 +47,7 @@ const TodoList = () => {
         <View
           style={{
             position: "fixed",
-            bottom: 100,
+            bottom: 130,
             left: 250,
             justifyContent: "center",
             alignItems: "center",
