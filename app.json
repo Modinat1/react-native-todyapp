@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "todo-react-native",
-    "slug": "todo-react-native",
+    "name": "todyapp",
+    "slug": "todyapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

@@ -16,7 +16,7 @@ const Calender = () => {
 
       <WeekPicker />
 
-      <View className="flex-row justify-between items-center">
+      <View className="flex-row justify-between items-center my-3">
         <Text className="text-base font-medium text-black">
           Today. Wednesday
         </Text>
@@ -61,7 +61,7 @@ const Calender = () => {
         />
       </View>
 
-      <View className="flex-row justify-between items-center mt-3">
+      <View className="flex-row justify-between items-center mt-5">
         <View style={styles.iconText}>
           <MaterialCommunityIcons name="clock-outline" size={16} color="red" />
           <Text style={styles.time}>08.30 PM</Text>

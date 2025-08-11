@@ -1,50 +1,72 @@
-# Welcome to your Expo app 👋
+# 📌 TodyApp
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A mobile application built with **Expo**, **React Native**, and **React Query** that allows users to create, view, and manage todos.  
+The app features a **tab-based navigation** layout, todo filtering, and a clean, minimal UI styled with **Tailwind CSS**.
 
-## Get started
+## 🚀 Setup Instructions
 
-1. Install dependencies
+1. **Clone the repository**
+   - git clone https://github.com/Modinat1/react-native-todyapp.git
+   - cd react-native-todyapp
+   - npm install
+   - npx expo start
 
-   ```bash
-   npm install
-   ```
+## 🎨 Design choices or assumptions made
 
-2. Start the app
+# Architecture
 
-   ```bash
-   npx expo start
-   ```
+- API requests are structured into a services layer (using axios) and consumed through hooks with React Query for caching, fetching, and mutation.
 
-In the output, you'll find options to open the app in a
+- UI is built using Tailwind for faster and utility-first styling.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- All colors used are configured in the tailwind.config.ts file for consistency
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- Navigation is handled by expo-router, and Tabs layout.
 
-## Get a fresh project
+# State Management
 
-When you're ready, run:
+- Query and mutation states (loading, error, success) are handled through React Query.
 
-```bash
-npm run reset-project
-```
+- Zustand is used for global state management
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+# Icons
 
-## Learn more
+- All icons are SVGs stored in /assets/svgs for consistency and scalability.
 
-To learn more about developing your project with Expo, look at the following resources:
+# Filtering
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- Todos are filtered into In Progress and Completed categories.
 
-## Join the community
+## ✨ Features Implemented
 
-Join our community of developers creating universal apps.
+# 🖥 UI Features
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Onboarding – Designed onboarding flow for new users.
+
+- Authentication – Designed register & login screens.
+
+- Home & Todos – Home screen, upcoming todos screen, filter screens, and todo project management screens.
+
+- Settings – Settings screen populated with authenticated user data from DummyJSON API.
+
+# ⚙ Functional Features
+
+- Authentication – Simulated login using DummyJSON Auth API.
+
+- Todos API – Fetch todos from DummyJSON Todos.
+
+- Filtering – Filtererd todos into In Progress & Completed.
+
+- Card Layout – Todos displayed in a clean, card-based UI.
+
+# 🗺 Navigation
+
+- Tab-based navigation with active state indicators.
+
+- Custom SVG icons for each tab.
+
+# 🛠 API Integration
+
+- Axios-based service layer for API requests.
+
+- React Query for api consumption and caching.

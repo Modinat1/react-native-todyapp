@@ -1,66 +1,12 @@
-import {
-  Key,
-  Logout,
-  MagicPen,
-  MessageQuestion,
-  MetalStar,
-  Profile,
-  Search,
-  Sun,
-  Weight,
-} from "@/assets";
+import { Search } from "@/assets";
 import BackButton from "@/components/BackButton";
 import Container from "@/components/Container";
+import { settingOtherItems, settingsItems } from "@/lib/data";
 import useAuthStore from "@/store/features/useAuthStore";
 import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
 import { Image, Switch, Text, View } from "react-native";
 
-const settingsItems = [
-  {
-    id: 1,
-    title: "Account",
-    icon: <Profile />,
-  },
-  {
-    id: 2,
-    title: "Theme",
-    icon: <MagicPen />,
-  },
-  {
-    id: 3,
-    title: "App Icon",
-    icon: <MetalStar />,
-  },
-  {
-    id: 4,
-    title: "Productivity",
-    icon: <Weight />,
-  },
-  {
-    id: 5,
-    title: "Change Mode",
-    icon: <Sun />,
-  },
-];
-
-const settingOtherItems = [
-  {
-    id: 1,
-    title: "Privacy Policy",
-    icon: <Key />,
-  },
-  {
-    id: 2,
-    title: "Help Center",
-    icon: <MessageQuestion />,
-  },
-  {
-    id: 3,
-    title: "Log Out",
-    icon: <Logout />,
-  },
-];
 const Settings = () => {
   const { firstName, image, lastName, username } = useAuthStore();
 

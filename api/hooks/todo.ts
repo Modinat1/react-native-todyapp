@@ -1,5 +1,10 @@
+import { Todo } from "@/lib/types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { TodoServices } from "../services/todoServices";
+
+type TodosResponse = {
+  todos: Todo[];
+};
 
 export const useCreateTodo = () => {
   return useMutation({
@@ -8,7 +13,10 @@ export const useCreateTodo = () => {
 };
 
 export const useGetTodos = () =>
-  useQuery({
+  useQuery<TodosResponse>({
     queryKey: ["todos"],
-    queryFn: () => TodoServices.getTodos(),
+    queryFn: async () => {
+      const res = await TodoServices.getTodos();
+      return res.data;
+    },
   });
