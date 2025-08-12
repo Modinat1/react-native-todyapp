@@ -98,5 +98,15 @@ The app features a **tab-based navigation** layout, todo filtering, and a clean,
 # Challenges
 
 - DummyJSON api does not align with the figma UI design
-- I could not get the todos I created, because of that, hence the getting of todos with the color theme could not take effect
-- I could only get sample todos from the api, not the ones created from the todo apo frontend
+- I could not get the todos I created, hence the getting of todos with the color theme could not take effect
+- I could only get sample todos from the api, not the ones created from the todo app frontend itself
+
+# User Login Details
+
+some user details that cne be use to logging
+
+1. username: emilys
+   password: emilyspass
+
+2. username: michaelw
+   password: michaelwpass
