@@ -9,6 +9,7 @@ import {
 import useAuthStore from "@/store/features/useAuthStore";
 import { useMutation } from "@tanstack/react-query";
 // import EmojiPicker from "react-native-emoji-picker";
+import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -20,6 +21,8 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import Toast from "react-native-toast-message";
 import { useAppStore } from "../store/store";
+import DatePicker from "./DatePicker";
+import TimePicker from "./TimePicker";
 
 type AddTodoModalProps = {
   visible: boolean;
@@ -29,6 +32,7 @@ type AddTodoModalProps = {
 export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
   const { userId } = useAuthStore();
   const { addTodo } = useAppStore();
+  const { openSheet, closeSheet } = useBottomSheetStore();
 
   console.log("userId:::", userId);
 
@@ -96,6 +100,34 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
     await mutateAsync(payload);
   };
 
+  const showDatePicker = () => {
+    openSheet({
+      snapPoints: ["60%"],
+      content: (
+        <DatePicker
+          visible={true}
+          onClose={() => {
+            closeSheet();
+          }}
+        />
+      ),
+    });
+  };
+
+  const showTimePicker = () => {
+    openSheet({
+      snapPoints: ["60%"],
+      content: (
+        <TimePicker
+          visible={true}
+          onClose={() => {
+            closeSheet();
+          }}
+        />
+      ),
+    });
+  };
+
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={styles.overlay}
@@ -124,8 +156,13 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
         <View className="flex-row justify-between items-center border-b pb-5 border-secondary-foreground">
           <View className="flex-row items-center gap-5">
             <TodoListIcon />
-            <CalenderIcon />
-            <ClockIcon />
+            <TouchableOpacity onPress={showDatePicker}>
+              <CalenderIcon />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={showTimePicker}>
+              <ClockIcon />
+            </TouchableOpacity>
             <FlagIcon />
           </View>
 
