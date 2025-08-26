@@ -102,7 +102,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
 
   const showDatePicker = () => {
     openSheet({
-      snapPoints: ["60%"],
+      snapPoints: ["90%"],
       content: (
         <DatePicker
           visible={true}

@@ -1,6 +1,8 @@
 import CalenderIcon from "./icons/calendar.svg";
+import CarIcon from "./icons/car.svg";
 import CategoryIcon from "./icons/Category.svg";
 import ClockIcon from "./icons/clock.svg";
+import Cloud from "./icons/cloud-notif.svg";
 import TodoListIcon from "./icons/direct-inbox.svg";
 import DocumentIcon from "./icons/Document.svg";
 import FacebookIcon from "./icons/facebookIcon.svg";
@@ -20,6 +22,7 @@ import SettingsIcon from "./icons/paper-plus.svg";
 import PlusIcon from "./icons/Plus.svg";
 import Priority from "./icons/priority1.svg";
 import Profile from "./icons/Profile.svg";
+import Reserve from "./icons/reserve.svg";
 import Search from "./icons/search-normal.svg";
 import SendIcon from "./icons/send.svg";
 import Setting from "./icons/Setting.svg";
@@ -27,12 +30,15 @@ import Setting2 from "./icons/Setting2.svg";
 import Sun from "./icons/sun.svg";
 import TaskIcon from "./icons/task-square.svg";
 import ThumbIcon from "./icons/thumbIcon.svg";
+import Timer from "./icons/Timer.svg";
 import Weight from "./icons/weight.svg";
 
 export {
   CalenderIcon,
+  CarIcon,
   CategoryIcon,
   ClockIcon,
+  Cloud,
   DocumentIcon,
   FacebookIcon,
   Filter,
@@ -50,6 +56,7 @@ export {
   PlusIcon,
   Priority,
   Profile,
+  Reserve,
   Search,
   SendIcon,
   Setting,
@@ -58,6 +65,7 @@ export {
   Sun,
   TaskIcon,
   ThumbIcon,
+  Timer,
   TodoListIcon,
   Weight,
 };

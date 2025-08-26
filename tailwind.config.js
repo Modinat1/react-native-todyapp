@@ -13,7 +13,7 @@ module.exports = {
       },
       colors: {
         background: "#ffffff",
-        // black: "hsla(228, 6%, 11%, 1)",
+        black: "hsl(225, 7%, 11%)",
 
         // secondary: "hsla(218, 9%, 51%, 1)",
         // card: {
