@@ -1,17 +1,28 @@
 import { Flag2 } from "@/assets";
 import { Todo } from "@/lib/types";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import React from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 const Card = ({ data }: { data: Todo[] }) => {
+  const router = useRouter();
   return (
     <FlatList
       data={data}
       showsVerticalScrollIndicator={false}
       keyExtractor={(item) => String(item.id)}
       renderItem={({ item, index }) => (
-        <View style={styles.cardWrapper}>
+        <TouchableOpacity
+          onPress={() => router.push(`/(main)/view-todo/${item.id}` as any)}
+          style={styles.cardWrapper}
+        >
           {/* Top Bar */}
           <View style={[styles.topBar, { backgroundColor: "#18A999" }]}>
             <Flag2 />
@@ -87,7 +98,7 @@ const Card = ({ data }: { data: Todo[] }) => {
               </Text>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       )}
     />
   );

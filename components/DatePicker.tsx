@@ -1,11 +1,13 @@
 import { CarIcon, Cloud, Reserve, Sun, Timer } from "@/assets";
 import { colors } from "@/colorSettings";
+import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import React, { useState } from "react";
 import { Text, View } from "react-native";
 import { Calendar } from "react-native-calendars";
 import Button from "./Button";
 import Container from "./Container";
+import TimePicker from "./TimePicker";
 
 type DatePickerProps = {
   visible: boolean;
@@ -41,8 +43,23 @@ const Items = [
 
 const DatePicker = ({ visible, onClose }: DatePickerProps) => {
   const [selected, setSelected] = useState("");
+  const { openSheet, closeSheet } = useBottomSheetStore();
 
   console.log("SELECTED DATE", selected);
+
+  const showTimePicker = () => {
+    openSheet({
+      snapPoints: ["60%"],
+      content: (
+        <TimePicker
+          visible={true}
+          onClose={() => {
+            closeSheet();
+          }}
+        />
+      ),
+    });
+  };
 
   return (
     <Container>
@@ -109,6 +126,7 @@ const DatePicker = ({ visible, onClose }: DatePickerProps) => {
 
       <View className="flex-row justify-between items-center gap-3 mt-10">
         <Button
+          onPress={showTimePicker}
           variant="ghost"
           className="bg-[#F3F5F9] flex-1 flex-row gap-3 items-center"
         >
