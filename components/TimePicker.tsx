@@ -9,20 +9,20 @@ type TimePickerProps = {
 
 const TimePicker = ({ visible, onClose }: TimePickerProps) => {
   const [time, setTime] = useState(new Date());
-  // const [show, setShow] = useState(false);
+  
 
   console.log("TIME:::::::", time);
 
   const onChange = (event: any, selectedTime?: Date) => {
-    // setShow(Platform.OS === "ios"); // iOS stays open until closed manually
+    
     if (selectedTime) {
-      setTime(selectedTime); // Save selected time
+      setTime(selectedTime);
     }
   };
 
   return (
     <View style={{ marginTop: 50 }}>
-      {/* <Button title="Pick a Time" onPress={() => setShow(true)} /> */}
+      
       <DateTimePicker
         value={time}
         mode="time"

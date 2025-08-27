@@ -14,19 +14,21 @@ import TimePicker from "@/components/TimePicker";
 import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import { useAppStore } from "@/store/store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
-const ViewTodo = () => {
-  const router = useRouter();
+interface ViewTodoModalProps {
+  closeSheetViewTodo: () => void;
+}
+const ViewTodoModal = ({ closeSheetViewTodo }: ViewTodoModalProps) => {
+  //   const router = useRouter();
   const { id } = useLocalSearchParams();
   const { openSheet, closeSheet } = useBottomSheetStore();
   const { selectedTheme } = useAppStore();
   const [activeIcon, setActiveIcon] = useState<string | null>(null);
-  // const [showComment, setShowComment] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   console.log("id:::::::::", id);
@@ -63,9 +65,9 @@ const ViewTodo = () => {
     <Container>
       <View className="flex-row justify-between items-center mb-10">
         <Text className="text-xl font-semibold text-black ">Detail Task</Text>
-        <FontAwesome
-          onPress={() => router.back()}
-          name="times"
+        <AntDesign
+          onPress={closeSheetViewTodo}
+          name="close"
           size={20}
           color="#A0AAB8"
         />
@@ -186,4 +188,4 @@ const ViewTodo = () => {
   );
 };
 
-export default ViewTodo;
+export default ViewTodoModal;

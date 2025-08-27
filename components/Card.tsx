@@ -1,7 +1,8 @@
 import { Flag2 } from "@/assets";
 import { Todo } from "@/lib/types";
+import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+// import { useRouter } from "expo-router";
 import React from "react";
 import {
   FlatList,
@@ -10,9 +11,39 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import ViewTodoModal from "./ViewTodoModal";
 
 const Card = ({ data }: { data: Todo[] }) => {
-  const router = useRouter();
+  // const router = useRouter();
+  const { openSheet, closeSheet } = useBottomSheetStore();
+
+  const showViewTodoModal = () => {
+    openSheet({
+      snapPoints: ["80%"],
+      content: (
+        <ViewTodoModal
+          onClose={() => {
+            closeSheet();
+            // Toast.show({
+            //   type: "success",
+            //   text1: "Todo added successfully ✅",
+            // });
+          }}
+        />
+        // <AddTodoModal
+        //   visible={true}
+        //   onClose={() => {
+        //     closeSheet();
+        //     Toast.show({
+        //       type: "success",
+        //       text1: "Todo added successfully ✅",
+        //     });
+        //   }}
+        // />
+      ),
+    });
+  };
+
   return (
     <FlatList
       data={data}
@@ -20,7 +51,8 @@ const Card = ({ data }: { data: Todo[] }) => {
       keyExtractor={(item) => String(item.id)}
       renderItem={({ item, index }) => (
         <TouchableOpacity
-          onPress={() => router.push(`/(main)/view-todo/${item.id}` as any)}
+          onPress={showViewTodoModal}
+          // onPress={() => router.push(`/(main)/view-todo/${item.id}` as any)}
           style={styles.cardWrapper}
         >
           {/* Top Bar */}

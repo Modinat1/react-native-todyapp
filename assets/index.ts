@@ -1,4 +1,6 @@
+import Attach from "./icons/attach.svg";
 import CalenderIcon from "./icons/calendar.svg";
+import Camera from "./icons/Camera.svg";
 import CarIcon from "./icons/car.svg";
 import CategoryIcon from "./icons/Category.svg";
 import ClockIcon from "./icons/clock.svg";
@@ -19,6 +21,7 @@ import MetalStar from "./icons/medal-star.svg";
 import MessageQuestion from "./icons/message-question.svg";
 import MessageIcon from "./icons/Message.svg";
 import SettingsIcon from "./icons/paper-plus.svg";
+import Paper from "./icons/Paper.svg";
 import PlusIcon from "./icons/Plus.svg";
 import Priority from "./icons/priority1.svg";
 import Profile from "./icons/Profile.svg";
@@ -31,10 +34,13 @@ import Sun from "./icons/sun.svg";
 import TaskIcon from "./icons/task-square.svg";
 import ThumbIcon from "./icons/thumbIcon.svg";
 import Timer from "./icons/Timer.svg";
+import Voice from "./icons/Voice.svg";
 import Weight from "./icons/weight.svg";
 
 export {
+  Attach,
   CalenderIcon,
+  Camera,
   CarIcon,
   CategoryIcon,
   ClockIcon,
@@ -53,6 +59,7 @@ export {
   MessageIcon,
   MessageQuestion,
   MetalStar,
+  Paper,
   PlusIcon,
   Priority,
   Profile,
@@ -67,5 +74,6 @@ export {
   ThumbIcon,
   Timer,
   TodoListIcon,
+  Voice,
   Weight,
 };

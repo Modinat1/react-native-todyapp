@@ -9,6 +9,7 @@ const Layout = () => {
       <Stack.Screen name="instructions" options={{ headerShown: false }} />
       <Stack.Screen name="boards" options={{ headerShown: false }} />
       <Stack.Screen name="view-todo" options={{ headerShown: false }} />
+      <Stack.Screen name="audio-recorder" options={{ headerShown: false }} />
     </Stack>
   );
 };
