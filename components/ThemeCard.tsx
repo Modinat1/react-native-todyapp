@@ -5,6 +5,7 @@ import { useAppStore } from "../store/store";
 
 type Theme = {
   id: number;
+  name: "blue" | "green" | "black" | "red";
   color: string;
 };
 

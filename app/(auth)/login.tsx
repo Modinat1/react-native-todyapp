@@ -7,11 +7,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 const Login = () => {
   const router = useRouter();
   const [error, setError] = useState("");
-  const [userName, setUserName] = useState("");
+  // const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuthStore();
@@ -19,38 +21,53 @@ const Login = () => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (data: any) => AuthService.signIn(data),
     onSuccess: async (data: any) => {
-      // console.log(
-      //   "Data from login:::::::::",
-      //   JSON.stringify(data.data, null, 2)
-      // );
+      console.log(
+        "Data.data from login:::::::::",
+        JSON.stringify(data.data, null, 2)
+      );
+      console.log("token:::::::::", JSON.stringify(data.data.token, null, 2));
+      // console.log("Data from login:::::::::", JSON.stringify(data, null, 2));
 
       login(
         {
           firstName: data.data.firstName,
           lastName: data.data.lastName,
-          username: data.data.username,
+          // username: data.data.username,
           email: data.data.email,
           gender: data.data.gender,
           image: data.data.image,
           userId: data.data.id,
+          token: data.data.token,
         },
-        data.accessToken
+        data.data.token
       );
-      router.replace("/(main)/themeScreen");
+
+      Toast.show({
+        type: "success",
+        text1: "Login successful",
+        visibilityTime: 2000,
+      });
+
+      setTimeout(() => router.replace("/(main)/themeScreen"), 3000);
     },
     onError: (error: any) => {
       setError(error.message || "Error signing in");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: error?.message || "Failed to login",
+      });
       console.error("Login error:", error);
     },
   });
 
   const onSubmit = async () => {
-    if (!userName || !password) {
+    if (!email || !password) {
       setError("Please enter both email and password");
       return;
     }
     setError("");
-    await mutateAsync({ username: userName, password });
+    await mutateAsync({ email: email, password });
   };
 
   return (
@@ -63,7 +80,7 @@ const Login = () => {
           <Text className="text-sm text-center font-normal text-secondary">
             You work faster and structured with Todyapp
           </Text>
-
+          {/* 
           <View className="my-5">
             <Text className="text-black font-medium text-base mb-2">
               Username
@@ -71,6 +88,18 @@ const Login = () => {
             <TextInput
               value={userName}
               onChangeText={setUserName}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              className="bg-secondary-foreground border border-border rounded-[6px] p-3"
+              placeholder="name@example.com"
+              placeholderTextColor="#A9B0C5"
+            />
+          </View> */}
+          <View className="my-5">
+            <Text className="text-black font-medium text-base mb-2">Email</Text>
+            <TextInput
+              value={email}
+              onChangeText={setEmail}
               autoCapitalize="none"
               keyboardType="email-address"
               className="bg-secondary-foreground border border-border rounded-[6px] p-3"

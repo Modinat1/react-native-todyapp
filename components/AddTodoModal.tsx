@@ -6,12 +6,14 @@ import {
   SendIcon,
   TodoListIcon,
 } from "@/assets";
-import useAuthStore from "@/store/features/useAuthStore";
+
 import { useMutation } from "@tanstack/react-query";
-// import EmojiPicker from "react-native-emoji-picker";
+
+import { colors } from "@/colorSettings";
 import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
   StyleSheet,
   Text,
   TextInput,
@@ -30,26 +32,23 @@ type AddTodoModalProps = {
 };
 
 export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
-  const { userId } = useAuthStore();
-  const { addTodo } = useAppStore();
+  const { selectedTheme } = useAppStore();
   const { openSheet, closeSheet } = useBottomSheetStore();
 
-  console.log("userId:::", userId);
-
   const [task, setTask] = useState("");
-  const [isDone, setIsDone] = useState(false);
+
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
-  // const [showEmojis, setShowEmojis] = useState(false);
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (payload: {
-      todo: string;
-      completed: boolean;
-      userId: number;
+      todoTitle: string;
+      description: string;
+      theme: string;
+      status: string;
     }) => TodoServices.postTodo(payload),
     onSuccess: (data) => {
-      addTodo(data.data);
+      // console.log("data:::::::::", data.data);
 
       Toast.show({
         type: "success",
@@ -60,7 +59,6 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
       // Clear inputs
       setTask("");
       setDescription("");
-      setIsDone(false);
 
       onClose();
     },
@@ -83,19 +81,14 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
       return;
     }
 
-    if (!userId) {
-      Toast.show({
-        type: "error",
-        text1: "User ID missing",
-      });
-      return;
-    }
-
     const payload = {
-      todo: task,
-      completed: isDone,
-      userId,
+      todoTitle: task,
+      description: description,
+      theme: selectedTheme.name,
+      status: "pending",
     };
+
+    console.log("Todo payload:::::::::", payload);
 
     await mutateAsync(payload);
   };
@@ -167,7 +160,11 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
           </View>
 
           <TouchableOpacity onPress={handleAdd} disabled={isPending}>
-            <SendIcon />
+            {isPending ? (
+              <ActivityIndicator color={colors.primary.DEFAULT} size={20} />
+            ) : (
+              <SendIcon />
+            )}
           </TouchableOpacity>
         </View>
 

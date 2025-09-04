@@ -1,13 +1,47 @@
+import { AuthService } from "@/api/services/authServices";
 import Button from "@/components/Button";
 import Container from "@/components/Container";
 import Feather from "@expo/vector-icons/Feather";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 
 const Register = () => {
   const router = useRouter();
+
+  const [error, setError] = useState("");
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const [showPassword, setShowPassword] = useState(false);
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: (data: any) => AuthService.register(data),
+    onSuccess: async (data: any) => {
+      console.log(
+        "Data from register:::::::::",
+        JSON.stringify(data.data, null, 2)
+      );
+
+      router.replace("/(auth)/login");
+    },
+    onError: (error: any) => {
+      setError(error.message || "Error signing in");
+      console.error("Login error:", error);
+    },
+  });
+
+  const onSubmit = async () => {
+    if (!email || !password || !userName) {
+      setError("Please all fields");
+      return;
+    }
+    setError("");
+    await mutateAsync({ email: email, userName: userName, password });
+  };
+
   return (
     <Container>
       <View className="flex-1 justify-between">
@@ -24,8 +58,8 @@ const Register = () => {
               Username
             </Text>
             <TextInput
-              //   value={userName}
-              //   onChangeText={setUserName}
+              value={userName}
+              onChangeText={setUserName}
               autoCapitalize="none"
               keyboardType="email-address"
               className="bg-secondary-foreground border border-border rounded-[6px] p-3"
@@ -37,8 +71,8 @@ const Register = () => {
           <View className="my-3">
             <Text className="text-black font-medium text-base mb-2">Email</Text>
             <TextInput
-              //   value={userName}
-              //   onChangeText={setUserName}
+              value={email}
+              onChangeText={setEmail}
               autoCapitalize="none"
               keyboardType="email-address"
               className="bg-secondary-foreground border border-border rounded-[6px] p-3"
@@ -53,6 +87,8 @@ const Register = () => {
             </Text>
             <View className="bg-secondary-foreground border border-border rounded-[6px] flex-row items-center px-3">
               <TextInput
+                value={password}
+                onChangeText={setPassword}
                 secureTextEntry={!showPassword}
                 className="flex-1 py-3"
                 placeholder="Enter your password"
@@ -68,6 +104,10 @@ const Register = () => {
             </View>
           </View>
 
+          {error ? (
+            <Text className="text-red-500 text-center mb-3">{error}</Text>
+          ) : null}
+
           <View className="flex-row justify-center text-base mt-5">
             <Text className="text-secondary"> Already registered? </Text>
             <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
@@ -76,7 +116,9 @@ const Register = () => {
           </View>
         </View>
 
-        <Button>Sign up</Button>
+        <Button disabled={isPending} loading={isPending} onPress={onSubmit}>
+          Sign up
+        </Button>
       </View>
     </Container>
   );

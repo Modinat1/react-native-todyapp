@@ -2,35 +2,16 @@ import { create } from "zustand";
 
 type Theme = {
   id: number;
-  color: string;
-};
-
-type Todo = {
-  id: number;
-  title: string;
+  name: "blue" | "green" | "black" | "red";
   color: string;
 };
 
 type Store = {
   selectedTheme: Theme;
   setSelectedTheme: (theme: Theme) => void;
-
-  todos: Todo[];
-  addTodo: (title: string) => void;
 };
 
-export const useAppStore = create<Store>((set, get) => ({
-  selectedTheme: { id: 1, color: "#18A999" },
+export const useAppStore = create<Store>((set) => ({
+  selectedTheme: { id: 1, name: "green", color: "#18A999" },
   setSelectedTheme: (theme) => set({ selectedTheme: theme }),
-
-  todos: [],
-  addTodo: (title) => {
-    const themeColor = get().selectedTheme.color;
-    const newTodo = {
-      id: Date.now(),
-      title,
-      color: themeColor,
-    };
-    set((state) => ({ todos: [...state.todos, newTodo] }));
-  },
 }));

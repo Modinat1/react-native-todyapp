@@ -1,8 +1,9 @@
+// import { useGetTodos } from "@/api/hooks/todo";
 import { Flag2 } from "@/assets";
 import { Todo } from "@/lib/types";
+import { formatDate, formatTime } from "@/lib/utils";
 import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-// import { useRouter } from "expo-router";
 import React from "react";
 import {
   FlatList,
@@ -13,33 +14,25 @@ import {
 } from "react-native";
 import ViewTodoModal from "./ViewTodoModal";
 
+// const Card = () => {
 const Card = ({ data }: { data: Todo[] }) => {
-  // const router = useRouter();
   const { openSheet, closeSheet } = useBottomSheetStore();
+  // const { data } = useGetTodos();
 
-  const showViewTodoModal = () => {
+  // const Todos = data?.todos;
+
+  // console.log("data from Card::::::", data);
+
+  const showViewTodoModal = (todo: Todo) => {
     openSheet({
       snapPoints: ["80%"],
       content: (
         <ViewTodoModal
+          todo={todo}
           onClose={() => {
             closeSheet();
-            // Toast.show({
-            //   type: "success",
-            //   text1: "Todo added successfully ✅",
-            // });
           }}
         />
-        // <AddTodoModal
-        //   visible={true}
-        //   onClose={() => {
-        //     closeSheet();
-        //     Toast.show({
-        //       type: "success",
-        //       text1: "Todo added successfully ✅",
-        //     });
-        //   }}
-        // />
       ),
     });
   };
@@ -48,15 +41,14 @@ const Card = ({ data }: { data: Todo[] }) => {
     <FlatList
       data={data}
       showsVerticalScrollIndicator={false}
-      keyExtractor={(item) => String(item.id)}
+      keyExtractor={(item) => String(item._id)}
       renderItem={({ item, index }) => (
         <TouchableOpacity
-          onPress={showViewTodoModal}
-          // onPress={() => router.push(`/(main)/view-todo/${item.id}` as any)}
+          onPress={() => showViewTodoModal(item)}
           style={styles.cardWrapper}
         >
           {/* Top Bar */}
-          <View style={[styles.topBar, { backgroundColor: "#18A999" }]}>
+          <View style={[styles.topBar, { backgroundColor: item.theme }]}>
             <Flag2 />
             <Text style={styles.priorityText}>Priority task {index + 1}</Text>
             <Feather
@@ -93,7 +85,7 @@ const Card = ({ data }: { data: Todo[] }) => {
                 />
               </View>
 
-              <Text style={styles.title}>{item.todo}</Text>
+              <Text style={styles.title}>{item.todoTitle}</Text>
             </View>
 
             {/* Divider */}
@@ -107,12 +99,12 @@ const Card = ({ data }: { data: Todo[] }) => {
                   size={16}
                   color="red"
                 />
-                <Text style={styles.time}>08.30 PM</Text>
+                <Text style={styles.time}>{formatTime(item.createdAt)}</Text>
               </View>
 
               <View style={styles.iconText}>
                 <Feather name="message-circle" size={14} color="#888" />
-                <Text style={styles.meta}>0</Text>
+                <Text style={styles.meta}>{item.comment.length}</Text>
               </View>
 
               <View style={styles.iconText}>
@@ -120,14 +112,7 @@ const Card = ({ data }: { data: Todo[] }) => {
                 <Text style={styles.meta}>0</Text>
               </View>
 
-              <Text style={styles.date}>
-                {new Date().toLocaleDateString("en-GB", {
-                  weekday: "short",
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </Text>
+              <Text style={styles.date}>{formatDate(item.createdAt)}</Text>
             </View>
           </View>
         </TouchableOpacity>

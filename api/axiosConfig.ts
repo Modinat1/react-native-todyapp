@@ -3,9 +3,7 @@ import axios from "axios";
 // import { EXPO_BASEURL } from "@env";
 
 const axiosInstance = axios.create({
-  baseURL: "https://dummyjson.com",
-  // baseURL: process.env.EXPO_BASEURL,
-  // timeout: 10000,
+  baseURL: process.env.EXPO_BASEURL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -14,12 +12,8 @@ const axiosInstance = axios.create({
 // Request interceptor
 axiosInstance.interceptors.request.use(
   async (config) => {
-    // Add auth token if exists
     try {
       const token = useAuthStore.getState().token;
-
-      // console.log(token, 'from the axiosConfig')
-
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }

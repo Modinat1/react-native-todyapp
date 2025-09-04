@@ -6,4 +6,9 @@ export class AuthService {
     const response = await axios.post(AUTH_ENDPOINTS.LOGIN, credentials);
     return response;
   }
+
+  static async register(credentials: any) {
+    const response = await axios.post(AUTH_ENDPOINTS.REGISTER, credentials);
+    return response;
+  }
 }

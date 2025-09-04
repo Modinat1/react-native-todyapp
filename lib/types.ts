@@ -5,8 +5,22 @@ export interface OnboardingStepProps {
 }
 
 export interface Todo {
-  id: string;
-  todo: string;
-  completed: boolean;
-  userId: number;
+  _id: string;
+  todoTitle: string;
+  description: string;
+  theme: string;
+  priority: string;
+  status: string;
+  userId: string;
+  documents: any[];
+  photo: string[];
+  voicenote: any[];
+  createdAt: Date;
+  updatedAt: Date;
+  comment: [
+    {
+      _id?: string;
+      commenterText: string;
+    }
+  ];
 }

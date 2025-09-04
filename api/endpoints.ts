@@ -4,7 +4,18 @@ export const AUTH_ENDPOINTS = {
 };
 
 export const TODO_ENDPOINTS = {
-  GET_TODOS: "/todos",
-  GET_TODOS_BY_USER: (userId: number) => `todos/user/${userId}`,
-  POST_TODO: "/todos/add",
+  GET_TODOS: "/todo",
+  POST_TODO: "/todo",
+  GET_TODO: (todoId: string) => `/todo/${todoId}`,
+  POST_COMMENT: (todoId: string) => `/todo/${todoId}/comment`,
+  UPDATE_TODO: (todoId: string) => `/todo/${todoId}`,
+  DELETE_TODO: (todoId: string) => `/todo/${todoId}`,
+};
+
+export const COMMENT_ENDPOINTS = {
+  GET_COMMENTS: (todoId: string) => `/comment/${todoId}`,
+  POST_COMMENT: "/comment",
+  GET_COMMENT: (commentId: string) => `/comment/${commentId}/comment`,
+  UPDATE_COMMENT: (commentId: string) => `/comment/${commentId}`,
+  DELETE_COMMENT: (commentId: string) => `/comment/${commentId}`,
 };
