@@ -90,7 +90,8 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
 
     console.log("Todo payload:::::::::", payload);
 
-    await mutateAsync(payload);
+    const res = await mutateAsync(payload);
+    console.log("res posting todo::::::", res.data);
   };
 
   const showDatePicker = () => {

@@ -33,6 +33,7 @@ const ViewTodoModal = ({ onClose, todo }: ViewTodoModalProps) => {
   const { selectedTheme } = useAppStore();
   const [activeIcon, setActiveIcon] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [commentModalVisible, setCommentModalVisible] = useState(false);
 
   const { data, isLoading } = useGetTodo(todo._id);
   // console.log("data::::", JSON.stringify(data, null, 2));
@@ -200,6 +201,8 @@ const ViewTodoModal = ({ onClose, todo }: ViewTodoModalProps) => {
 
       {activeIcon === "comment" && (
         <Comment
+          commentModalVisible={commentModalVisible}
+          setCommentModalVisible={setCommentModalVisible}
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           todoId={todo._id}

@@ -1,18 +1,12 @@
 import useAuthStore from "@/store/features/useAuthStore";
 import axios from "axios";
-// import { EXPO_BASEURL } from "@env";
 
-const axiosInstance = axios.create({
-  // baseURL: process.env.EXPO_BASEURL,
-  // baseURL: "http://172.29.159.89:5000",
+const axiosInstance2 = axios.create({
   baseURL: "https://todybackend.onrender.com",
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 // Request interceptor
-axiosInstance.interceptors.request.use(
+axiosInstance2.interceptors.request.use(
   async (config) => {
     try {
       const token = useAuthStore.getState().token;
@@ -28,7 +22,7 @@ axiosInstance.interceptors.request.use(
 );
 
 // Response interceptor to handle success and error of response
-axiosInstance.interceptors.response.use(
+axiosInstance2.interceptors.response.use(
   (response) => response,
   async (error) => {
     // Handle unauthorized errors
@@ -45,4 +39,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance;
+export default axiosInstance2;

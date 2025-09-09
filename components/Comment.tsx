@@ -1,8 +1,9 @@
 import { useGetTodo } from "@/api/hooks/todo";
-import { TodoServices } from "@/api/services/todoServices";
 import { Attach, SendIcon } from "@/assets";
 import { colors } from "@/colorSettings";
-import { useMutation } from "@tanstack/react-query";
+import useAuthStore from "@/store/features/useAuthStore";
+import useCommentStore from "@/store/features/useCommentStore";
+import * as FileSystem from "expo-file-system";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -16,62 +17,87 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import Toast from "react-native-toast-message";
 
 interface CommentProps {
+  commentModalVisible: boolean;
+  setCommentModalVisible: (commentModalVisible: boolean) => void;
+
   modalVisible: boolean;
   setModalVisible: (modalVisible: boolean) => void;
   todoId: string;
 }
-const Comment = ({ modalVisible, setModalVisible, todoId }: CommentProps) => {
+const Comment = ({
+  commentModalVisible,
+  modalVisible,
+  setModalVisible,
+  setCommentModalVisible,
+  todoId,
+}: CommentProps) => {
   const { data } = useGetTodo(todoId);
+  const { attachments } = useCommentStore();
+  const { token } = useAuthStore();
 
-  console.log(
-    "data from comment:::",
-    JSON.stringify(data?.todo?.comment, null, 2)
-  );
+  const [isLoading, setIsLoading] = useState(false);
+
+  // console.log("data from comment:::", JSON.stringify(data, null, 2));
 
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
 
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: (payload: { commenterText: string }) =>
-      TodoServices.addComment(todoId, payload),
-    onSuccess: (data) => {
-      console.log(
-        "updating comment data:::::::::",
-        JSON.stringify(data.data, null, 2)
-      );
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append("todoId", todoId);
+      formData.append("commenterText", comment);
 
+      for (const [index, att] of attachments.entries()) {
+        const uploadUri = await getUploadableFile(att.uri);
+        formData.append("attachments", {
+          uri: uploadUri,
+          name: att.name ?? `file_${index}.jpg`,
+          type: att.mimeType ?? "image/jpeg",
+        } as any);
+      }
+
+      const res = await fetch("https://todybackend.onrender.com/comment", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+      setIsLoading(false);
+      setComment("");
+      setCommentModalVisible(false);
       Toast.show({
         type: "success",
         text1: "Comment added successfully ✅",
         visibilityTime: 2000,
       });
-
-      setComment("");
-      setModalVisible(false);
-    },
-    onError: (error: any) => {
-      console.log(error);
-
-      setError(error?.message || "Failed to add comment");
+      console.log(await res.text());
+    } catch (error) {
+      console.log("error from posting comment", error);
+      const errorMessage =
+        typeof error === "object" && error !== null && "message" in error
+          ? (error as { message: string }).message
+          : "Error adding comment";
+      setError(errorMessage);
       Toast.show({
         type: "error",
         text1: "Error",
-        text2: error?.message || "Failed to add comment",
+        text2: errorMessage,
       });
-    },
-  });
-
-  const handleAddComment = async () => {
-    if (!comment.trim()) {
-      Toast.show({
-        type: "info",
-        text1: "Please enter a comment",
-      });
-      return;
     }
-
-    await mutateAsync({ commenterText: comment });
   };
+
+  async function getUploadableFile(uri: string) {
+    const filename = uri.split("/").pop();
+    if (!FileSystem.cacheDirectory) {
+      throw new Error("Cache directory is not available.");
+    }
+    const newPath = FileSystem.cacheDirectory + filename;
+    await FileSystem.copyAsync({ from: uri, to: newPath });
+    return newPath;
+  }
 
   if (error) {
     console.log(error);
@@ -100,12 +126,13 @@ const Comment = ({ modalVisible, setModalVisible, todoId }: CommentProps) => {
             <Attach />
           </TouchableOpacity>
 
-          <TouchableOpacity disabled={isPending} onPress={handleAddComment}>
-            {isPending ? (
+          <TouchableOpacity disabled={isLoading} onPress={handleSubmit}>
+            {isLoading ? (
               <ActivityIndicator color={colors.primary.DEFAULT} size={20} />
             ) : (
               <SendIcon />
             )}
+            {/* <SendIcon /> */}
           </TouchableOpacity>
         </View>
 
@@ -131,8 +158,6 @@ const Comment = ({ modalVisible, setModalVisible, todoId }: CommentProps) => {
           <Text style={{ fontSize: 24 }}>✌️</Text>
           <Text style={{ fontSize: 24 }}>💪</Text>
         </TouchableOpacity>
-
-        {/* <Text>{error}</Text> */}
       </View>
     </KeyboardAwareScrollView>
   );

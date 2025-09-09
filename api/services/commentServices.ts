@@ -1,5 +1,6 @@
 import axiosInstance from "../axiosConfig";
 import { COMMENT_ENDPOINTS } from "../endpoints";
+import axiosInstance2 from "./multipartConfig";
 
 export class CommentServices {
   static async getComments(todoId: string) {
@@ -9,10 +10,36 @@ export class CommentServices {
     return response;
   }
 
-  static async postComment(credentials: any) {
-    const response = await axiosInstance.post(
+  // static async postComment(formData: FormData) {
+  //   const response = await axiosInstance2.post(
+  //     COMMENT_ENDPOINTS.POST_COMMENT,
+  //     formData,
+  //     {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     }
+  //   );
+  //   console.log("response from servies::::::", response);
+
+  //   return response;
+  // }
+
+  static async postComment(formData: FormData) {
+    const response = await axiosInstance2.post(
       COMMENT_ENDPOINTS.POST_COMMENT,
-      credentials
+      formData,
+      {
+        timeout: 120000,
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            console.log(`📊 Upload Progress: ${percentCompleted}%`);
+          }
+        },
+      }
     );
     return response;
   }

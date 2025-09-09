@@ -1,17 +1,11 @@
 import { Camera, Paper, Voice } from "@/assets";
+import useCommentStore from "@/store/features/useCommentStore";
 import { AntDesign } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
-import {
-  Image,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React from "react";
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface MediaModalProps {
   modalVisible: boolean;
@@ -20,66 +14,93 @@ interface MediaModalProps {
 
 const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
   const router = useRouter();
+  const { addAttachment } = useCommentStore();
 
-  const [image, setImage] = useState<string | null>(null);
-  const [doc, setDoc] = useState<DocumentPicker.DocumentPickerAsset | null>(
-    null
-  );
-
+  /** Pick one or multiple docs */
   const pickDocument = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: "*/*", // any type of file
-        copyToCacheDirectory: true,
-      });
+    const result = await DocumentPicker.getDocumentAsync({
+      type: "*/*",
+      multiple: true, // <— allow multiple selection
+    });
 
-      // Check if user didn't cancel and assets exist
-      if (!result.canceled && result.assets && result.assets.length > 0) {
-        setDoc(result.assets[0]); // save the first selected doc
-      }
-    } catch (error) {
-      console.error("Document picking error:", error);
+    if (!result.canceled && result.assets?.length) {
+      result.assets.forEach((file, index) => {
+        // addAttachment({
+        //   uri: file.uri,
+        //   type: "doc",
+        //   name: file.name || `doc-${Date.now()}-${index}`,
+        //   mimeType: file.mimeType || "application/octet-stream",
+        // });
+        addAttachment({
+          uri: file.uri,
+          type: "doc",
+          name: file.name || `doc-${Date.now()}-${index}`,
+          mimeType: file.mimeType || "application/pdf", // or whatever DocumentPicker returns
+        });
+      });
     }
   };
 
+  /** Take one photo */
   const takePhoto = async () => {
-    // Ask for camera permissions
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== "granted") {
-      alert("Sorry, we need camera permissions to make this work!");
+      alert("Need camera permission");
       return;
     }
 
-    // Launch camera
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri); // Save photo URI
+    const result = await ImagePicker.launchCameraAsync({ quality: 1 });
+    if (!result.canceled && result.assets?.length) {
+      result.assets.forEach((asset, index) => {
+        // addAttachment({
+        //   uri: asset.uri,
+        //   type: "image",
+        //   name: asset.fileName || `photo-${Date.now()}-${index}.jpg`,
+        //   mimeType: asset.type || "image/jpeg",
+        // });
+        addAttachment({
+          uri: asset.uri,
+          type: "image", // you can keep a logical type for your UI
+          name: asset.fileName || `photo-${Date.now()}-${index}.jpg`,
+          mimeType: "image/jpeg", // hardcode a valid MIME for photos
+        });
+      });
     }
   };
 
-  // 🖼 Pick image from gallery
+  /** Choose one or multiple photos */
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      alert("Sorry, we need media library permissions to make this work!");
+      alert("Need media library permission");
       return;
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
       quality: 1,
+      allowsMultipleSelection: true, // <— multiple selection
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
     });
 
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
+    if (!result.canceled && result.assets?.length) {
+      result.assets.forEach((asset, index) => {
+        // addAttachment({
+        //   uri: asset.uri,
+        //   type: "image",
+        //   name: asset.fileName || `photo-${Date.now()}-${index}.jpg`,
+        //   mimeType: asset.type || "image/jpeg",
+        // });
+        addAttachment({
+          uri: asset.uri,
+          type: "image", // you can keep a logical type for your UI
+          name: asset.fileName || `photo-${Date.now()}-${index}.jpg`,
+          mimeType: "image/jpeg", // hardcode a valid MIME for photos
+        });
+      });
     }
   };
+
+  // For audio: after recording finishes, call addAttachment with the audio file.
 
   return (
     <Modal
@@ -112,15 +133,13 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
             className="flex-row gap-3 items-center"
           >
             <Text>🖼</Text>
-
             <Text className="text-[#218EFD] text-base font-normal">
-              Choose a Photo
+              Choose Photos
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             onPress={takePhoto}
-            // onPress={() => router.push("/(main)/image-picker")}
             className="flex-row gap-3 items-center"
           >
             <Camera />
@@ -140,24 +159,6 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
           </TouchableOpacity>
         </View>
       </View>
-
-      <View>
-        {image && (
-          <Image
-            source={{ uri: image }}
-            className="w-[80%] mt-10 rounded-2xl"
-          />
-        )}
-      </View>
-
-      {doc && (
-        <View>
-          <Text>📄 File Name: {doc.name}</Text>
-          <Text>📂 File Size: {doc.size} bytes</Text>
-          <Text>📍 URI: {doc.uri}</Text>
-          <Text>📑 Type: {doc.mimeType}</Text>
-        </View>
-      )}
     </Modal>
   );
 };
