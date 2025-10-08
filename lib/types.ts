@@ -17,10 +17,39 @@ export interface Todo {
   voicenote: any[];
   createdAt: Date;
   updatedAt: Date;
-  comment: [
+  comments: [
     {
       _id?: string;
       commenterText: string;
     }
   ];
+}
+
+export interface CommentTypes {
+  id: string;
+  commenterId: string;
+  commenterText: string;
+  todoId: string;
+  attachments?: attachmentType[];
+  _id: string;
+}
+
+export type attachmentType = {
+  type: string;
+  url: string;
+  meta: {
+    originalName: string;
+    size: number;
+    mime: string;
+  };
+  _id: string;
+};
+export interface CommentsResponse {
+  id: string;
+  commenterId: string;
+  commenterText: string;
+  todoId: string;
+  attachments?: attachmentType[];
+  createdAt: Date;
+  updatedAt: Date;
 }

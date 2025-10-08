@@ -14,7 +14,7 @@ const TodoList = () => {
 
   const { data, isLoading } = useGetTodos();
 
-  // console.log("USER TODOS:::::::", JSON.stringify(data, null, 2));
+  console.log("USER TODOS:::::::", JSON.stringify(data, null, 2));
 
   const TodoData = data?.todos || [];
 

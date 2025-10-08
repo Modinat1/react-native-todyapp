@@ -4,7 +4,6 @@ import { Todo } from "@/lib/types";
 import { formatDate, formatTime } from "@/lib/utils";
 import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import React from "react";
 import {
   FlatList,
   StyleSheet,
@@ -85,7 +84,7 @@ const Card = ({ data }: { data: Todo[] }) => {
                 />
               </View>
 
-              <Text style={styles.title}>{item.todoTitle}</Text>
+              <Text style={styles.title}>{item?.todoTitle}</Text>
             </View>
 
             {/* Divider */}
@@ -99,12 +98,12 @@ const Card = ({ data }: { data: Todo[] }) => {
                   size={16}
                   color="red"
                 />
-                <Text style={styles.time}>{formatTime(item.createdAt)}</Text>
+                <Text style={styles.time}>{formatTime(item?.createdAt)}</Text>
               </View>
 
               <View style={styles.iconText}>
                 <Feather name="message-circle" size={14} color="#888" />
-                <Text style={styles.meta}>{item.comment.length}</Text>
+                <Text style={styles.meta}>{item?.comments?.length}</Text>
               </View>
 
               <View style={styles.iconText}>
@@ -112,7 +111,7 @@ const Card = ({ data }: { data: Todo[] }) => {
                 <Text style={styles.meta}>0</Text>
               </View>
 
-              <Text style={styles.date}>{formatDate(item.createdAt)}</Text>
+              <Text style={styles.date}>{formatDate(item?.createdAt)}</Text>
             </View>
           </View>
         </TouchableOpacity>

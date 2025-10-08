@@ -1,11 +1,11 @@
 import { Camera, Paper, Voice } from "@/assets";
+import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import useCommentStore from "@/store/features/useCommentStore";
 import { AntDesign } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
 import * as ImagePicker from "expo-image-picker";
-import { useRouter } from "expo-router";
-import React from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import AudioModal from "./AudioModal";
 
 interface MediaModalProps {
   modalVisible: boolean;
@@ -13,8 +13,9 @@ interface MediaModalProps {
 }
 
 const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
-  const router = useRouter();
+  // const router = useRouter();
   const { addAttachment } = useCommentStore();
+  const { openAudioSheet, closeAudioSheet } = useBottomSheetStore();
 
   /** Pick one or multiple docs */
   const pickDocument = async () => {
@@ -38,6 +39,7 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
           mimeType: file.mimeType || "application/pdf", // or whatever DocumentPicker returns
         });
       });
+      setModalVisible(false);
     }
   };
 
@@ -65,6 +67,7 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
           mimeType: "image/jpeg", // hardcode a valid MIME for photos
         });
       });
+      setModalVisible(false);
     }
   };
 
@@ -97,11 +100,25 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
           mimeType: "image/jpeg", // hardcode a valid MIME for photos
         });
       });
+      setModalVisible(false);
     }
   };
 
   // For audio: after recording finishes, call addAttachment with the audio file.
-
+  const showAudioModal = () => {
+    setModalVisible(false);
+    openAudioSheet({
+      audioSnapPoints: ["90%"],
+      audioContent: (
+        <AudioModal
+          visible={true}
+          onAttachSuccess={() => {
+            closeAudioSheet();
+          }}
+        />
+      ),
+    });
+  };
   return (
     <Modal
       visible={modalVisible}
@@ -149,7 +166,8 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => router.push("/(main)/audio-recorder")}
+            onPress={() => showAudioModal()}
+            // onPress={() => router.push("/(main)/audio-recorder")}
             className="flex-row gap-3 items-center"
           >
             <Voice />

@@ -19,7 +19,7 @@ import { useAppStore } from "@/store/store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import Loader from "./Loader";
 
@@ -37,6 +37,8 @@ const ViewTodoModal = ({ onClose, todo }: ViewTodoModalProps) => {
 
   const { data, isLoading } = useGetTodo(todo._id);
   // console.log("data::::", JSON.stringify(data, null, 2));
+  // console.log("todo::::", JSON.stringify(todo, null, 2));
+  // console.log("todo Id::::", JSON.stringify(todo._id, null, 2));
 
   const todoData = data?.todo;
 

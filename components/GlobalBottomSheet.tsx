@@ -9,59 +9,101 @@ export const GlobalBottomSheet = () => {
     content,
     snapPoints = ["40%", "90%"],
     closeSheet,
+    isAudioOpen,
+    audioSnapPoints = ["40%"],
+    audioContent,
+    closeAudioSheet,
   } = useBottomSheetStore();
 
   const ref = useRef<BottomSheetModal>(null);
-  const [modalKey, setModalKey] = useState(0);
-  const [shouldOpen, setShouldOpen] = useState(false);
+  const audioRef = useRef<BottomSheetModal>(null);
 
+  const [modalKey, setModalKey] = useState(0);
+  const [audioModalKey, setAudioModalKey] = useState(0);
+  const [shouldOpen, setShouldOpen] = useState(false);
+  const [shouldOpenAudio, setShouldOpenAudio] = useState(false);
+
+  // Handle normal sheet
   useEffect(() => {
     if (isOpen) {
-      // Force re-mount
       setModalKey((prev) => prev + 1);
       setShouldOpen(true);
-    } else {
-      if (ref.current) {
-        ref.current.dismiss();
-      }
+    } else if (ref.current) {
+      ref.current.dismiss();
     }
   }, [isOpen]);
 
-  // Call present after remount is done
   useEffect(() => {
     if (shouldOpen) {
       InteractionManager.runAfterInteractions(() => {
-        if (ref.current) {
-          ref.current.present();
-          setShouldOpen(false);
-        }
+        ref.current?.present();
+        setShouldOpen(false);
       });
     }
   }, [modalKey, shouldOpen]);
 
+  // Handle audio sheet
+  useEffect(() => {
+    if (isAudioOpen) {
+      setAudioModalKey((prev) => prev + 1);
+      setShouldOpenAudio(true);
+    } else if (audioRef.current) {
+      audioRef.current.dismiss();
+    }
+  }, [isAudioOpen]);
+
+  useEffect(() => {
+    if (shouldOpenAudio) {
+      InteractionManager.runAfterInteractions(() => {
+        audioRef.current?.present();
+        setShouldOpenAudio(false);
+      });
+    }
+  }, [audioModalKey, shouldOpenAudio]);
+
   return (
-    <BottomSheetModal
-      key={modalKey}
-      ref={ref}
-      index={0}
-      enableDynamicSizing={false}
-      snapPoints={snapPoints}
-      onDismiss={closeSheet}
-      backgroundStyle={{
-        backgroundColor: "white",
-        // borderTopLeftRadius: 30,
-        // borderTopRightRadius: 30,
-      }}
-      backdropComponent={(props) => (
-        <BottomSheetBackdrop
-          {...props}
-          appearsOnIndex={0}
-          disappearsOnIndex={-1}
-          opacity={0.5}
-        />
-      )}
-    >
-      {content}
-    </BottomSheetModal>
+    <>
+      {/* Main sheet */}
+      <BottomSheetModal
+        key={`main-${modalKey}`}
+        ref={ref}
+        index={0}
+        enableDynamicSizing={false}
+        snapPoints={snapPoints}
+        onDismiss={closeSheet}
+        backgroundStyle={{ backgroundColor: "white" }}
+        backdropComponent={(props) => (
+          <BottomSheetBackdrop
+            {...props}
+            appearsOnIndex={0}
+            disappearsOnIndex={-1}
+            opacity={0.5}
+          />
+        )}
+      >
+        {content}
+      </BottomSheetModal>
+
+      {/* Audio sheet */}
+      <BottomSheetModal
+        key={`audio-${modalKey}`}
+        ref={audioRef}
+        index={0}
+        enableDynamicSizing={false}
+        snapPoints={audioSnapPoints}
+        onDismiss={closeAudioSheet}
+        backgroundStyle={{ backgroundColor: "white" }}
+        backdropComponent={(props) => (
+          <BottomSheetBackdrop
+            {...props}
+            appearsOnIndex={0}
+            disappearsOnIndex={-1}
+            opacity={0.5}
+          />
+        )}
+      >
+        {audioContent}
+      </BottomSheetModal>
+    </>
   );
 };

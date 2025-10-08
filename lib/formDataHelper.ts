@@ -12,6 +12,9 @@ export function useFormDataUploader() {
       const mime = type ?? "application/octet-stream";
 
       // copy the file into cache so fetch/axios can read it
+      // 👇 cast to any when using the constant
+      // const cachePath = (FileSystem as any).cacheDirectory + filename;
+
       const cachePath = FileSystem.cacheDirectory + filename;
       await FileSystem.copyAsync({ from: uri, to: cachePath });
 

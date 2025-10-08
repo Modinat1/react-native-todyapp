@@ -9,6 +9,16 @@ interface BottomSheetState {
     snapPoints?: string[];
   }) => void;
   closeSheet: () => void;
+
+  // audio sheet
+  isAudioOpen: boolean;
+  audioContent: React.ReactNode;
+  audioSnapPoints?: string[];
+  openAudioSheet: (props: {
+    audioContent: React.ReactNode;
+    audioSnapPoints?: string[];
+  }) => void;
+  closeAudioSheet: () => void;
 }
 
 export const useBottomSheetStore = create<BottomSheetState>((set) => ({
@@ -18,4 +28,12 @@ export const useBottomSheetStore = create<BottomSheetState>((set) => ({
   openSheet: ({ content, snapPoints }) =>
     set({ isOpen: true, content, snapPoints }),
   closeSheet: () => set({ isOpen: false, content: null }),
+
+  // audio sheet
+  isAudioOpen: false,
+  audioContent: null,
+  audioSnapPoints: ["40%"],
+  openAudioSheet: ({ audioContent, audioSnapPoints }) =>
+    set({ isAudioOpen: true, audioContent, audioSnapPoints }),
+  closeAudioSheet: () => set({ isAudioOpen: false, audioContent: null }),
 }));
