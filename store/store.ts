@@ -1,3 +1,4 @@
+import { colors } from "@/colorSettings";
 import { create } from "zustand";
 
 type Theme = {
@@ -12,6 +13,7 @@ type Store = {
 };
 
 export const useAppStore = create<Store>((set) => ({
-  selectedTheme: { id: 1, name: "green", color: "#18A999" },
+  selectedTheme: { id: 1, name: "green", color: colors.primary.DEFAULT },
+  // selectedTheme: { id: 1, name: "green", color: "#18A999" },
   setSelectedTheme: (theme) => set({ selectedTheme: theme }),
 }));

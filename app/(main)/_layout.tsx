@@ -1,5 +1,4 @@
 import { Stack } from "expo-router";
-import React from "react";
 
 const Layout = () => {
   return (
@@ -8,7 +7,6 @@ const Layout = () => {
       <Stack.Screen name="settings" options={{ headerShown: false }} />
       <Stack.Screen name="instructions" options={{ headerShown: false }} />
       <Stack.Screen name="boards" options={{ headerShown: false }} />
-      <Stack.Screen name="audio-recorder" options={{ headerShown: false }} />
     </Stack>
   );
 };

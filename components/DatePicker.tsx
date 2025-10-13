@@ -22,7 +22,7 @@ const DatePicker = ({
   onSelectedDueDate,
 }: DatePickerProps) => {
   const [selected, setSelected] = useState("");
-  const { openSheet, closeSheet } = useBottomSheetStore();
+  const { openTimeSheet, closeTimeSheet } = useBottomSheetStore();
 
   console.log("SELECTED DATE", selected);
 
@@ -72,13 +72,13 @@ const DatePicker = ({
   }, []);
 
   const showTimePicker = () => {
-    openSheet({
-      snapPoints: ["60%"],
-      content: (
+    openTimeSheet({
+      timeSnapPoints: ["60%"],
+      timeContent: (
         <TimePicker
           visible={true}
           onClose={() => {
-            closeSheet();
+            closeTimeSheet();
           }}
         />
       ),
@@ -160,7 +160,7 @@ const DatePicker = ({
         </Button>
         <Button
           className="flex-1 flex-row gap-3 items-center"
-          onPress={onClose}
+          // onPress={onClose}
         >
           <Timer />
           <Text className="text-white font-medium">Schedule</Text>

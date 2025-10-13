@@ -1,3 +1,4 @@
+import { themes } from "@/lib/data";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...classes: (string | false | null | undefined)[]) {
@@ -23,4 +24,9 @@ export const formatDate = (dateString?: Date) => {
     month: "short",
     year: "numeric",
   });
+};
+
+export const getThemeColor = (colour: string) => {
+  const theme = themes.find((t) => t.name === colour);
+  return theme ? theme.color : "#24A19C";
 };

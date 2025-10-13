@@ -32,7 +32,12 @@ type AddTodoModalProps = {
 
 export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
   const { selectedTheme } = useAppStore();
-  const { openCalenderSheet, closeCalenderSheet } = useBottomSheetStore();
+  const {
+    openCalenderSheet,
+    closeCalenderSheet,
+    // openTimeSheet,
+    // closeTimeSheet,
+  } = useBottomSheetStore();
 
   const [task, setTask] = useState("");
 
@@ -118,13 +123,13 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
   };
 
   // const showTimePicker = () => {
-  //   openSheet({
-  //     snapPoints: ["60%"],
-  //     content: (
+  //   openTimeSheet({
+  //     timeSnapPoints: ["40%"],
+  //     timeContent: (
   //       <TimePicker
   //         visible={true}
   //         onClose={() => {
-  //           closeSheet();
+  //           closeTimeSheet();
   //         }}
   //       />
   //     ),
@@ -164,6 +169,11 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
             {dueDate ? dueDate : "Enter due date"}
           </Text>
         </TouchableOpacity>
+
+        {/* <TouchableOpacity onPress={showTimePicker}>
+          <ClockIcon />
+        </TouchableOpacity> */}
+
         {/* Add button */}
         <View className="flex-row justify-end items-center border-b pb-5 border-secondary-foreground">
           {/* <View className="flex-row items-center gap-5">
@@ -176,7 +186,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
               <ClockIcon />
             </TouchableOpacity>
             <FlagIcon />
-          </View> */}
+          </View>  */}
 
           <TouchableOpacity onPress={handleAdd} disabled={isPending}>
             {isPending ? (

@@ -29,6 +29,16 @@ interface BottomSheetState {
     calenderSnapPoints?: string[];
   }) => void;
   closeCalenderSheet: () => void;
+
+  // time sheet
+  isTimeOpen: boolean;
+  timeContent: React.ReactNode;
+  timeSnapPoints?: string[];
+  openTimeSheet: (props: {
+    timeContent: React.ReactNode;
+    timeSnapPoints?: string[];
+  }) => void;
+  closeTimeSheet: () => void;
 }
 
 export const useBottomSheetStore = create<BottomSheetState>((set) => ({
@@ -55,4 +65,12 @@ export const useBottomSheetStore = create<BottomSheetState>((set) => ({
     set({ isCalenderOpen: true, calenderContent, calenderSnapPoints }),
   closeCalenderSheet: () =>
     set({ isCalenderOpen: false, calenderContent: null }),
+
+  // time sheet
+  isTimeOpen: false,
+  timeContent: null,
+  timeSnapPoints: ["40%"],
+  openTimeSheet: ({ timeContent, timeSnapPoints }) =>
+    set({ isTimeOpen: true, timeContent, timeSnapPoints }),
+  closeTimeSheet: () => set({ isTimeOpen: false, timeContent: null }),
 }));

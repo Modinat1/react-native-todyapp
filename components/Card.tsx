@@ -1,7 +1,6 @@
-// import { useGetTodos } from "@/api/hooks/todo";
 import { Flag2 } from "@/assets";
 import { Todo } from "@/lib/types";
-import { formatDate, formatTime } from "@/lib/utils";
+import { formatDate, formatTime, getThemeColor } from "@/lib/utils";
 import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import {
@@ -13,14 +12,10 @@ import {
 } from "react-native";
 import ViewTodoModal from "./ViewTodoModal";
 
-// const Card = () => {
 const Card = ({ data }: { data: Todo[] }) => {
   const { openSheet, closeSheet } = useBottomSheetStore();
-  // const { data } = useGetTodos();
 
-  // const Todos = data?.todos;
-
-  // console.log("data from Card::::::", data);
+  // console.log("data from Card::::::", JSON.stringify(data, null, 2));
 
   const showViewTodoModal = (todo: Todo) => {
     openSheet({
@@ -47,7 +42,12 @@ const Card = ({ data }: { data: Todo[] }) => {
           style={styles.cardWrapper}
         >
           {/* Top Bar */}
-          <View style={[styles.topBar, { backgroundColor: item.theme }]}>
+          <View
+            style={[
+              styles.topBar,
+              { backgroundColor: getThemeColor(item.theme) },
+            ]}
+          >
             <Flag2 />
             <Text style={styles.priorityText}>Priority task {index + 1}</Text>
             <Feather
@@ -67,7 +67,7 @@ const Card = ({ data }: { data: Todo[] }) => {
                   justifyContent: "center",
                   alignItems: "center",
                   borderWidth: 2,
-                  borderColor: "#18A999",
+                  borderColor: `${getThemeColor(item.theme)}`,
                   borderRadius: 999,
                   width: 20,
                   height: 20,
@@ -79,7 +79,7 @@ const Card = ({ data }: { data: Todo[] }) => {
                     width: 8,
                     height: 8,
                     borderRadius: 999,
-                    backgroundColor: "#18A999",
+                    backgroundColor: `${getThemeColor(item.theme)}`,
                   }}
                 />
               </View>

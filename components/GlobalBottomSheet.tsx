@@ -22,18 +22,27 @@ export const GlobalBottomSheet = () => {
     calenderSnapPoints = ["40%"],
     calenderContent,
     closeCalenderSheet,
+
+    //time sheet
+    isTimeOpen,
+    timeSnapPoints = ["40%"],
+    timeContent,
+    closeTimeSheet,
   } = useBottomSheetStore();
 
   const ref = useRef<BottomSheetModal>(null);
   const audioRef = useRef<BottomSheetModal>(null);
   const calenderRef = useRef<BottomSheetModal>(null);
+  const timeRef = useRef<BottomSheetModal>(null);
 
   const [modalKey, setModalKey] = useState(0);
   const [audioModalKey, setAudioModalKey] = useState(0);
   const [calenderModalKey, setCalenderModalKey] = useState(0);
+  const [timeModalKey, setTimeModalKey] = useState(0);
   const [shouldOpen, setShouldOpen] = useState(false);
   const [shouldOpenAudio, setShouldOpenAudio] = useState(false);
   const [shouldOpenCalender, setShouldOpenCalender] = useState(false);
+  const [shouldOpenTime, setShouldOpenTime] = useState(false);
 
   // Handle normal sheet
   useEffect(() => {
@@ -91,6 +100,25 @@ export const GlobalBottomSheet = () => {
       });
     }
   }, [calenderModalKey, shouldOpenCalender]);
+
+  // Handle time sheet
+  useEffect(() => {
+    if (isTimeOpen) {
+      setTimeModalKey((prev) => prev + 1);
+      setShouldOpenTime(true);
+    } else if (timeRef.current) {
+      timeRef.current.dismiss();
+    }
+  }, [isTimeOpen]);
+
+  useEffect(() => {
+    if (shouldOpenTime) {
+      InteractionManager.runAfterInteractions(() => {
+        timeRef.current?.present();
+        setShouldOpenTime(false);
+      });
+    }
+  }, [timeModalKey, shouldOpenTime]);
 
   return (
     <>
@@ -155,6 +183,27 @@ export const GlobalBottomSheet = () => {
         )}
       >
         {calenderContent}
+      </BottomSheetModal>
+
+      {/* time sheet */}
+      <BottomSheetModal
+        key={`time-${modalKey}`}
+        ref={timeRef}
+        index={0}
+        enableDynamicSizing={false}
+        snapPoints={timeSnapPoints}
+        onDismiss={closeTimeSheet}
+        backgroundStyle={{ backgroundColor: "white" }}
+        backdropComponent={(props) => (
+          <BottomSheetBackdrop
+            {...props}
+            appearsOnIndex={0}
+            disappearsOnIndex={-1}
+            opacity={0.5}
+          />
+        )}
+      >
+        {timeContent}
       </BottomSheetModal>
     </>
   );
