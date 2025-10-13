@@ -13,6 +13,7 @@ interface CommentState {
   setCommenterText: (text: string) => void;
   addAttachment: (attachment: Attachment) => void;
   clearAttachments: () => void;
+  token?: string | undefined;
 }
 
 const useCommentStore = create<CommentState>((set) => ({

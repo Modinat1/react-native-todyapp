@@ -7,7 +7,7 @@ import Container from "@/components/Container";
 import { Todo } from "@/lib/types";
 // import useAuthStore from "@/store/features/useAuthStore";
 import Entypo from "@expo/vector-icons/Entypo";
-import React, { useState } from "react";
+import { useState } from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 const Boards = () => {
@@ -21,8 +21,12 @@ const Boards = () => {
 
   const TodoData = data?.todos || [];
 
-  const inProgressTodo = TodoData.filter((todo: Todo) => !todo.completed);
-  const completedTodo = TodoData.filter((todo: Todo) => todo.completed);
+  const inProgressTodo = TodoData.filter(
+    (todo: Todo) => todo.status === "pending"
+  );
+  const completedTodo = TodoData.filter(
+    (todo: Todo) => todo.status === "completed"
+  );
 
   const displayedTodos =
     filter === "inProgress" ? inProgressTodo : completedTodo;

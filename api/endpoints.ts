@@ -10,6 +10,7 @@ export const TODO_ENDPOINTS = {
   POST_COMMENT: (todoId: string) => `/todo/${todoId}/comment`,
   UPDATE_TODO: (todoId: string) => `/todo/${todoId}`,
   DELETE_TODO: (todoId: string) => `/todo/${todoId}`,
+  UPDATE_TODO_STATUS: (todoId: string) => `/todo/${todoId}/status`,
 };
 
 export const COMMENT_ENDPOINTS = {

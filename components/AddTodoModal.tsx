@@ -1,17 +1,16 @@
 import { TodoServices } from "@/api/services/todoServices";
 import {
   CalenderIcon,
-  ClockIcon,
-  FlagIcon,
+  // ClockIcon,
+  // FlagIcon,
   SendIcon,
-  TodoListIcon,
 } from "@/assets";
 
 import { useMutation } from "@tanstack/react-query";
 
 import { colors } from "@/colorSettings";
 import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -24,7 +23,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import Toast from "react-native-toast-message";
 import { useAppStore } from "../store/store";
 import DatePicker from "./DatePicker";
-import TimePicker from "./TimePicker";
+// import TimePicker from "./TimePicker";
 
 type AddTodoModalProps = {
   visible: boolean;
@@ -39,6 +38,11 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
 
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [dueDate, setDueDate] = useState("");
+
+  const handleSetDueDate = (date: string) => {
+    setDueDate(date);
+  };
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (payload: {
@@ -46,6 +50,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
       description: string;
       theme: string;
       status: string;
+      dueDate: string;
     }) => TodoServices.postTodo(payload),
     onSuccess: (data) => {
       // console.log("data:::::::::", data.data);
@@ -86,6 +91,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
       description: description,
       theme: selectedTheme.name,
       status: "pending",
+      dueDate: dueDate,
     };
 
     console.log("Todo payload:::::::::", payload);
@@ -103,24 +109,25 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
           onClose={() => {
             closeSheet();
           }}
+          onSelectedDueDate={handleSetDueDate}
         />
       ),
     });
   };
 
-  const showTimePicker = () => {
-    openSheet({
-      snapPoints: ["60%"],
-      content: (
-        <TimePicker
-          visible={true}
-          onClose={() => {
-            closeSheet();
-          }}
-        />
-      ),
-    });
-  };
+  // const showTimePicker = () => {
+  //   openSheet({
+  //     snapPoints: ["60%"],
+  //     content: (
+  //       <TimePicker
+  //         visible={true}
+  //         onClose={() => {
+  //           closeSheet();
+  //         }}
+  //       />
+  //     ),
+  //   });
+  // };
 
   return (
     <KeyboardAwareScrollView
@@ -146,9 +153,16 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
           placeholderTextColor="#A9B0C5"
           multiline
         />
+        <TouchableOpacity
+          onPress={showDatePicker}
+          className="flex-row items-center gap-2"
+        >
+          <CalenderIcon />
+          <Text className="text-[#A9B0C5] text-base">Enter due date</Text>
+        </TouchableOpacity>
         {/* Add button */}
-        <View className="flex-row justify-between items-center border-b pb-5 border-secondary-foreground">
-          <View className="flex-row items-center gap-5">
+        <View className="flex-row justify-end items-center border-b pb-5 border-secondary-foreground">
+          {/* <View className="flex-row items-center gap-5">
             <TodoListIcon />
             <TouchableOpacity onPress={showDatePicker}>
               <CalenderIcon />
@@ -158,7 +172,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
               <ClockIcon />
             </TouchableOpacity>
             <FlagIcon />
-          </View>
+          </View> */}
 
           <TouchableOpacity onPress={handleAdd} disabled={isPending}>
             {isPending ? (

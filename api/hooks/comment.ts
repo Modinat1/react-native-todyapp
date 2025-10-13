@@ -10,19 +10,20 @@ import useAuthStore from "@/store/features/useAuthStore";
 export const usePostComment = (todoId: string) => {
   const queryClient = useQueryClient();
   // read the token directly (sync) from your zustand store
-  const token = useAuthStore.getState().token;
+  const rawToken = useAuthStore.getState().token;
+  const token: string | undefined = rawToken === null ? undefined : rawToken;
 
   return useMutation({
     mutationFn: (payload: {
       todoId: string;
       commenterText: string;
       attachments?: any[];
+      token: string | undefined;
     }) => postCommentService(payload, token),
     onSuccess: () => {
-      // invalidate relevant queries so UI refreshes
       queryClient.invalidateQueries({ queryKey: ["comments", todoId] });
       queryClient.invalidateQueries({ queryKey: ["todo", todoId] });
-      queryClient.invalidateQueries({ queryKey: ["todos"] }); // optional
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
   });
 };

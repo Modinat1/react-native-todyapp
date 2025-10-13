@@ -1,7 +1,6 @@
 import { useGetComments, usePostComment } from "@/api/hooks/comment";
 import { Attach, SendIcon } from "@/assets";
 import { colors } from "@/colorSettings";
-import useAuthStore from "@/store/features/useAuthStore";
 import useCommentStore from "@/store/features/useCommentStore";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Audio } from "expo-av";
@@ -41,13 +40,12 @@ const Comment = ({
   todoId,
 }: CommentProps) => {
   const { attachments, clearAttachments } = useCommentStore();
-  const { token } = useAuthStore();
 
   const [isLoading, setIsLoading] = useState(false);
 
   const { data: comments, isLoading: commentLoading } = useGetComments(todoId);
   // const postComment = usePostComment(todoId);
-  console.log("todoId from comment again::::", todoId);
+  // console.log("todoId from comment again::::", todoId);
 
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
@@ -58,10 +56,14 @@ const Comment = ({
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
+      // Get token from your auth store or context
+      const token = useCommentStore.getState().token; // Replace with your actual token retrieval logic
+
       await postComment.mutateAsync({
         todoId,
         commenterText: comment,
         attachments, // your attachments array from useCommentStore
+        token, // add token here
       });
 
       // reset UI on success
@@ -83,7 +85,7 @@ const Comment = ({
   }
 
   const todoComments = comments?.comments;
-  console.log("data from comment:::", JSON.stringify(todoComments, null, 2));
+  // console.log("data from comment:::", JSON.stringify(todoComments, null, 2));
 
   const downloadFile = async (uri) => {
     const fileUri = FileSystem.documentDirectory + uri.split("/").pop();
@@ -95,7 +97,7 @@ const Comment = ({
     const { sound } = await Audio.Sound.createAsync({ uri });
     await sound.playAsync();
   };
-  console.log("attachments::::", attachments);
+  // console.log("attachments::::", attachments);
 
   return (
     <KeyboardAvoidingView

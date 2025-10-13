@@ -1,4 +1,4 @@
-import { useGetTodo } from "@/api/hooks/todo";
+import { useGetTodo, useUpdateTodoStatus } from "@/api/hooks/todo";
 import {
   BagSvg,
   CalenderSvg,
@@ -20,7 +20,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+import Toast from "react-native-toast-message";
 import Loader from "./Loader";
 
 interface ViewTodoModalProps {
@@ -35,7 +36,12 @@ const ViewTodoModal = ({ onClose, todo }: ViewTodoModalProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [commentModalVisible, setCommentModalVisible] = useState(false);
 
+  const [openToolTip, setOpenToolTip] = useState(false);
+
   const { data, isLoading } = useGetTodo(todo._id);
+  const { mutateAsync: updateTodoStatus, isPending } = useUpdateTodoStatus(
+    todo._id
+  );
   // console.log("data::::", JSON.stringify(data, null, 2));
   // console.log("todo::::", JSON.stringify(todo, null, 2));
   // console.log("todo Id::::", JSON.stringify(todo._id, null, 2));
@@ -68,6 +74,22 @@ const ViewTodoModal = ({ onClose, todo }: ViewTodoModalProps) => {
         />
       ),
     });
+  };
+
+  const handleUpdateTodoStatus = async () => {
+    try {
+      await updateTodoStatus({ status: "completed" });
+
+      Toast.show({
+        type: "success",
+        text1: "Todo status updated successfully ✅",
+      });
+    } catch (error: any) {
+      console.log(error, "error updating todo status");
+
+      const message = error?.message ?? "Error updating todo status";
+      Toast.show({ type: "error", text1: "Error", text2: message });
+    }
   };
 
   return (
@@ -192,9 +214,24 @@ const ViewTodoModal = ({ onClose, todo }: ViewTodoModalProps) => {
                 />
               </TouchableOpacity>
             </View>
-            <View>
+            <TouchableOpacity onPress={() => setOpenToolTip(!openToolTip)}>
               <Entypo name="dots-three-vertical" size={20} color="#A0AAB8" />
-            </View>
+            </TouchableOpacity>
+            {openToolTip && (
+              <TouchableOpacity
+                onPress={() => handleUpdateTodoStatus()}
+                className="bg-white border-border border-4 absolute top-10 right-0 shadow-2xl rounded-md p-3 z-10"
+              >
+                {isPending ? (
+                  <ActivityIndicator
+                    size="small"
+                    color={colors.primary.DEFAULT}
+                  />
+                ) : (
+                  <Text className="text-secondary">Mark as completed</Text>
+                )}
+              </TouchableOpacity>
+            )}
           </View>
         </>
       )}

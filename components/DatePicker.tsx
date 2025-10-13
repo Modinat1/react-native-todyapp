@@ -1,8 +1,9 @@
 import { CarIcon, Cloud, Reserve, Sun, Timer } from "@/assets";
 import { colors } from "@/colorSettings";
+import { formatDate } from "@/lib/utils";
 import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import React, { useState } from "react";
+import { useMemo, useState } from "react";
 import { Text, View } from "react-native";
 import { Calendar } from "react-native-calendars";
 import Button from "./Button";
@@ -12,40 +13,63 @@ import TimePicker from "./TimePicker";
 type DatePickerProps = {
   visible: boolean;
   onClose: () => void;
+  onSelectedDueDate?: (date: string) => void;
 };
 
-const Items = [
-  {
-    id: "1",
-    title: "Today",
-    value: "4, Apr 2022",
-    icon: <Sun />,
-  },
-  {
-    id: "2",
-    title: "Tomorrow",
-    value: "Sat",
-    icon: <Cloud />,
-  },
-  {
-    id: "3",
-    title: "This weekend",
-    value: "Wed",
-    icon: <CarIcon />,
-  },
-  {
-    id: "4",
-    title: "Next weekend",
-    value: "10, Apr 2022",
-    icon: <Reserve />,
-  },
-];
-
-const DatePicker = ({ visible, onClose }: DatePickerProps) => {
+const DatePicker = ({
+  visible,
+  onClose,
+  onSelectedDueDate,
+}: DatePickerProps) => {
   const [selected, setSelected] = useState("");
   const { openSheet, closeSheet } = useBottomSheetStore();
 
   console.log("SELECTED DATE", selected);
+
+  const Items = useMemo(() => {
+    const today = new Date();
+
+    // Tomorrow
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+
+    // This weekend (Saturday)
+    const thisWeekend = new Date(today);
+    const day = today.getDay();
+    const saturdayOffset = day <= 6 ? 6 - day : 0;
+    thisWeekend.setDate(today.getDate() + saturdayOffset);
+
+    // Next weekend (next Saturday)
+    const nextWeekend = new Date(thisWeekend);
+    nextWeekend.setDate(thisWeekend.getDate() + 7);
+
+    return [
+      {
+        id: "1",
+        title: "Today",
+        value: formatDate(today),
+        icon: <Sun />,
+      },
+      {
+        id: "2",
+        title: "Tomorrow",
+        value: formatDate(tomorrow),
+        icon: <Cloud />,
+      },
+      {
+        id: "3",
+        title: "This weekend",
+        value: formatDate(thisWeekend),
+        icon: <CarIcon />,
+      },
+      {
+        id: "4",
+        title: "Next weekend",
+        value: formatDate(nextWeekend),
+        icon: <Reserve />,
+      },
+    ];
+  }, []);
 
   const showTimePicker = () => {
     openSheet({
@@ -92,6 +116,7 @@ const DatePicker = ({ visible, onClose }: DatePickerProps) => {
           current={new Date().toISOString().split("T")[0]}
           onDayPress={(day) => {
             setSelected(day.dateString);
+            onSelectedDueDate?.(day.dateString);
           }}
           markedDates={{
             [selected]: {
@@ -133,9 +158,12 @@ const DatePicker = ({ visible, onClose }: DatePickerProps) => {
           <AntDesign name="plus" size={24} color={colors.primary.DEFAULT} />
           <Text className="text-primary font-medium">Add Time</Text>
         </Button>
-        <Button className="flex-1 flex-row gap-3 items-center">
+        <Button
+          className="flex-1 flex-row gap-3 items-center"
+          onPress={onClose}
+        >
           <Timer />
-          <Text className="text-white font-medium">Reschedule</Text>
+          <Text className="text-white font-medium">Schedule</Text>
         </Button>
       </View>
     </Container>

@@ -14,11 +14,11 @@ export const useCreateTodo = () => {
   });
 };
 
-export const useGetTodos = () =>
+export const useGetTodos = (params?: Record<string, any>) =>
   useQuery<TodosResponse>({
-    queryKey: ["todos"],
+    queryKey: ["todos", params],
     queryFn: async () => {
-      const res = await TodoServices.getTodos();
+      const res = await TodoServices.getTodos(params);
       return res.data;
     },
     refetchOnWindowFocus: true, // refetch on focus
@@ -76,31 +76,32 @@ export const useDeleteTodo = () => {
   });
 };
 
-export const useAddComment = (todoId: string) => {
+export const useUpdateTodoStatus = (todoId: string) => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    // this should post { commenterText } to the backend
-    mutationFn: (payload: { commenterText: string }) =>
-      TodoServices.addComment(todoId, payload),
-
-    onSuccess: (res) => {
-      // The updated todo returned from backend
-      const updatedTodo: Todo = res.data.updatedTodo;
-
-      // 1️⃣ update single todo cache
-      queryClient.setQueryData<Todo>(["todo", todoId], updatedTodo);
-
-      // 2️⃣ update the todos list cache
-      queryClient.setQueryData<{ todos: Todo[] }>(["todos"], (old) => {
-        if (!old) return old;
-        return {
-          ...old,
-          todos: old.todos.map((t) =>
-            t._id === updatedTodo._id ? updatedTodo : t
-          ),
-        };
-      });
+    mutationFn: async ({ status }: { status: string }) => {
+      const res = await TodoServices.updateTodoStatus(todoId, { status });
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todo", todoId] });
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
   });
 };
+
+// export const getTodos = async ({
+//   status,
+//   page = 1,
+//   limit = 4,
+// }: {
+//   status?: string;
+//   page?: number;
+//   limit?: number;
+// }) => {
+//   const params: Record<string, string | number> = { page, limit };
+//   if (status) params.status = status;
+
+//   const response = await axios.get("/api/todos", { params });
+//   return response.data;
+// };

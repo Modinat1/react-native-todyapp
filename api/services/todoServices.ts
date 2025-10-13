@@ -2,8 +2,10 @@ import axiosInstance from "../axiosConfig";
 import { TODO_ENDPOINTS } from "../endpoints";
 
 export class TodoServices {
-  static async getTodos() {
-    const response = await axiosInstance.get(TODO_ENDPOINTS.GET_TODOS);
+  static async getTodos(params?: Record<string, any>) {
+    const response = await axiosInstance.get(TODO_ENDPOINTS.GET_TODOS, {
+      params,
+    });
     return response;
   }
 
@@ -35,9 +37,9 @@ export class TodoServices {
     return response;
   }
 
-  static async addComment(todoId: string, credentials: any) {
-    const response = await axiosInstance.post(
-      TODO_ENDPOINTS.POST_COMMENT(todoId),
+  static async updateTodoStatus(todoId: string, credentials: any) {
+    const response = await axiosInstance.patch(
+      TODO_ENDPOINTS.UPDATE_TODO_STATUS(todoId),
       credentials
     );
     return response;
