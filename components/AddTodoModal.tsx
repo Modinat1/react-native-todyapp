@@ -32,7 +32,7 @@ type AddTodoModalProps = {
 
 export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
   const { selectedTheme } = useAppStore();
-  const { openSheet, closeSheet } = useBottomSheetStore();
+  const { openCalenderSheet, closeCalenderSheet } = useBottomSheetStore();
 
   const [task, setTask] = useState("");
 
@@ -68,6 +68,8 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
       onClose();
     },
     onError: (error: any) => {
+      console.log(error, "error creating todo");
+
       setError(error?.message || "Failed to add todo");
       Toast.show({
         type: "error",
@@ -101,13 +103,13 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
   };
 
   const showDatePicker = () => {
-    openSheet({
-      snapPoints: ["90%"],
-      content: (
+    openCalenderSheet({
+      calenderSnapPoints: ["90%"],
+      calenderContent: (
         <DatePicker
           visible={true}
           onClose={() => {
-            closeSheet();
+            closeCalenderSheet();
           }}
           onSelectedDueDate={handleSetDueDate}
         />
@@ -158,7 +160,9 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
           className="flex-row items-center gap-2"
         >
           <CalenderIcon />
-          <Text className="text-[#A9B0C5] text-base">Enter due date</Text>
+          <Text className="text-[#A9B0C5] text-base">
+            {dueDate ? dueDate : "Enter due date"}
+          </Text>
         </TouchableOpacity>
         {/* Add button */}
         <View className="flex-row justify-end items-center border-b pb-5 border-secondary-foreground">
@@ -198,7 +202,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
           <Text style={{ fontSize: 24 }}>💪</Text>
         </TouchableOpacity>
         {/* <EmojiPicker /> */}
-        <Text>{error}</Text>
+        <Text className="text-center text-destructive text-base">{error}</Text>
       </View>
     </KeyboardAwareScrollView>
   );

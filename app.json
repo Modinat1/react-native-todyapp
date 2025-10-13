@@ -44,6 +44,28 @@
         {
           "cameraPermission": "Allow Todyapp to access your camera"
         }
+      ],
+      [
+        "@react-native-community/datetimepicker",
+        {
+          "android": {
+            "datePicker": {
+              "colorAccent": {
+                "light": "#24A19C"
+              },
+              "textColorPrimary": {
+                "light": "#24A19C"
+              }
+            },
+            "timePicker": {
+              "background": { "light": "#FF5722", "dark": "#383838" },
+              "numbersBackgroundColor": {
+                "light": "#24A19C",
+                "dark": "#383838"
+              }
+            }
+          }
+        }
       ]
     ],
     "experiments": {

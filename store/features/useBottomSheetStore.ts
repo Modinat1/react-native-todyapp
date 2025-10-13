@@ -19,6 +19,16 @@ interface BottomSheetState {
     audioSnapPoints?: string[];
   }) => void;
   closeAudioSheet: () => void;
+
+  // calender sheet
+  isCalenderOpen: boolean;
+  calenderContent: React.ReactNode;
+  calenderSnapPoints?: string[];
+  openCalenderSheet: (props: {
+    calenderContent: React.ReactNode;
+    calenderSnapPoints?: string[];
+  }) => void;
+  closeCalenderSheet: () => void;
 }
 
 export const useBottomSheetStore = create<BottomSheetState>((set) => ({
@@ -36,4 +46,13 @@ export const useBottomSheetStore = create<BottomSheetState>((set) => ({
   openAudioSheet: ({ audioContent, audioSnapPoints }) =>
     set({ isAudioOpen: true, audioContent, audioSnapPoints }),
   closeAudioSheet: () => set({ isAudioOpen: false, audioContent: null }),
+
+  // calender sheet
+  isCalenderOpen: false,
+  calenderContent: null,
+  calenderSnapPoints: ["40%"],
+  openCalenderSheet: ({ calenderContent, calenderSnapPoints }) =>
+    set({ isCalenderOpen: true, calenderContent, calenderSnapPoints }),
+  closeCalenderSheet: () =>
+    set({ isCalenderOpen: false, calenderContent: null }),
 }));

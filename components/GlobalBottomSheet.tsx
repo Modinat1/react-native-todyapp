@@ -5,23 +5,35 @@ import { InteractionManager } from "react-native";
 
 export const GlobalBottomSheet = () => {
   const {
+    // general sheet
     isOpen,
     content,
     snapPoints = ["40%", "90%"],
     closeSheet,
+
+    // audio sheet
     isAudioOpen,
     audioSnapPoints = ["40%"],
     audioContent,
     closeAudioSheet,
+
+    //calender sheet
+    isCalenderOpen,
+    calenderSnapPoints = ["40%"],
+    calenderContent,
+    closeCalenderSheet,
   } = useBottomSheetStore();
 
   const ref = useRef<BottomSheetModal>(null);
   const audioRef = useRef<BottomSheetModal>(null);
+  const calenderRef = useRef<BottomSheetModal>(null);
 
   const [modalKey, setModalKey] = useState(0);
   const [audioModalKey, setAudioModalKey] = useState(0);
+  const [calenderModalKey, setCalenderModalKey] = useState(0);
   const [shouldOpen, setShouldOpen] = useState(false);
   const [shouldOpenAudio, setShouldOpenAudio] = useState(false);
+  const [shouldOpenCalender, setShouldOpenCalender] = useState(false);
 
   // Handle normal sheet
   useEffect(() => {
@@ -60,6 +72,25 @@ export const GlobalBottomSheet = () => {
       });
     }
   }, [audioModalKey, shouldOpenAudio]);
+
+  // Handle calender sheet
+  useEffect(() => {
+    if (isCalenderOpen) {
+      setCalenderModalKey((prev) => prev + 1);
+      setShouldOpenCalender(true);
+    } else if (calenderRef.current) {
+      calenderRef.current.dismiss();
+    }
+  }, [isCalenderOpen]);
+
+  useEffect(() => {
+    if (shouldOpenCalender) {
+      InteractionManager.runAfterInteractions(() => {
+        calenderRef.current?.present();
+        setShouldOpenCalender(false);
+      });
+    }
+  }, [calenderModalKey, shouldOpenCalender]);
 
   return (
     <>
@@ -103,6 +134,27 @@ export const GlobalBottomSheet = () => {
         )}
       >
         {audioContent}
+      </BottomSheetModal>
+
+      {/* calender sheet */}
+      <BottomSheetModal
+        key={`calander-${modalKey}`}
+        ref={calenderRef}
+        index={0}
+        enableDynamicSizing={false}
+        snapPoints={calenderSnapPoints}
+        onDismiss={closeCalenderSheet}
+        backgroundStyle={{ backgroundColor: "white" }}
+        backdropComponent={(props) => (
+          <BottomSheetBackdrop
+            {...props}
+            appearsOnIndex={0}
+            disappearsOnIndex={-1}
+            opacity={0.5}
+          />
+        )}
+      >
+        {calenderContent}
       </BottomSheetModal>
     </>
   );
