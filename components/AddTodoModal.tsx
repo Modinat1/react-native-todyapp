@@ -1,7 +1,7 @@
 import { TodoServices } from "@/api/services/todoServices";
 import {
   CalenderIcon,
-  // ClockIcon,
+  ClockIcon,
   // FlagIcon,
   SendIcon,
 } from "@/assets";
@@ -44,6 +44,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [dueDate, setDueDate] = useState("");
+  const [dueTime, setDueTime] = useState("");
 
   const handleSetDueDate = (date: string) => {
     setDueDate(date);
@@ -56,6 +57,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
       theme: string;
       status: string;
       dueDate: string;
+      dueTime: string;
     }) => TodoServices.postTodo(payload),
     onSuccess: (data) => {
       // console.log("data:::::::::", data.data);
@@ -99,6 +101,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
       theme: selectedTheme.name,
       status: "pending",
       dueDate: dueDate,
+      dueTime: dueTime,
     };
 
     console.log("Todo payload:::::::::", payload);
@@ -169,6 +172,18 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
             {dueDate ? dueDate : "Enter due date"}
           </Text>
         </TouchableOpacity>
+
+        <View className="flex-row gap-3 items-center">
+          <ClockIcon />
+          <TextInput
+            placeholder="Due Time"
+            value={dueTime}
+            onChangeText={setDueTime}
+            style={styles.input}
+            placeholderTextColor="#A9B0C5"
+            multiline
+          />
+        </View>
 
         {/* <TouchableOpacity onPress={showTimePicker}>
           <ClockIcon />

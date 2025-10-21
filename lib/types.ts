@@ -37,6 +37,7 @@ export interface CommentTypes {
 export type attachmentType = {
   type: string;
   url: string;
+  uri?: string;
   meta: {
     originalName: string;
     size: number;
@@ -44,12 +45,16 @@ export type attachmentType = {
   };
   _id: string;
 };
-export interface CommentsResponse {
-  id: string;
+export interface Comment {
+  _id: string;
   commenterId: string;
   commenterText: string;
   todoId: string;
   attachments?: attachmentType[];
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface CommentsResponse {
+  comments: Comment[];
 }

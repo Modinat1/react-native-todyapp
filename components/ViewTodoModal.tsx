@@ -12,7 +12,6 @@ import Container from "@/components/Container";
 import DatePicker from "@/components/DatePicker";
 import MediaModal from "@/components/MediaModal";
 import TimePicker from "@/components/TimePicker";
-import { Todo } from "@/lib/types";
 import { formatTime } from "@/lib/utils";
 import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import { useAppStore } from "@/store/store";
@@ -26,10 +25,10 @@ import Loader from "./Loader";
 
 interface ViewTodoModalProps {
   onClose: () => void;
-  todo: Todo;
+  todoId: string;
 }
 
-const ViewTodoModal = ({ onClose, todo }: ViewTodoModalProps) => {
+const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
   const { openSheet, closeSheet } = useBottomSheetStore();
   const { selectedTheme } = useAppStore();
   const [activeIcon, setActiveIcon] = useState<string | null>(null);
@@ -38,10 +37,9 @@ const ViewTodoModal = ({ onClose, todo }: ViewTodoModalProps) => {
 
   const [openToolTip, setOpenToolTip] = useState(false);
 
-  const { data, isLoading } = useGetTodo(todo._id);
-  const { mutateAsync: updateTodoStatus, isPending } = useUpdateTodoStatus(
-    todo._id
-  );
+  const { data, isLoading } = useGetTodo(todoId);
+  const { mutateAsync: updateTodoStatus, isPending } =
+    useUpdateTodoStatus(todoId);
   // console.log("data::::", JSON.stringify(data, null, 2));
   // console.log("todo::::", JSON.stringify(todo, null, 2));
   // console.log("todo Id::::", JSON.stringify(todo._id, null, 2));
@@ -244,7 +242,7 @@ const ViewTodoModal = ({ onClose, todo }: ViewTodoModalProps) => {
           setCommentModalVisible={setCommentModalVisible}
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
-          todoId={todo._id}
+          todoId={todoId}
         />
       )}
 

@@ -11,7 +11,7 @@ interface AuthState {
   image: any | null;
   token: string | null;
   isAuthenticated: boolean;
-  userId: number | null;
+  userId: string | null;
 }
 
 interface AuthAction {

@@ -22,7 +22,7 @@ const Card = ({ data }: { data: Todo[] }) => {
       snapPoints: ["80%"],
       content: (
         <ViewTodoModal
-          todo={todo}
+          todoId={todo._id}
           onClose={() => {
             closeSheet();
           }}

@@ -111,7 +111,7 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
       audioSnapPoints: ["90%"],
       audioContent: (
         <AudioModal
-          visible={true}
+          // visible={true}
           onAttachSuccess={() => {
             closeAudioSheet();
           }}
@@ -139,8 +139,8 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
             onPress={pickDocument}
             className="flex-row gap-3 items-center"
           >
-            <Paper />
-            <Text className="text-primary text-base font-normal">
+            <Paper className="flex-1" />
+            <Text className="flex-1 text-primary text-base font-normal">
               File/Document
             </Text>
           </TouchableOpacity>
@@ -149,7 +149,7 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
             onPress={pickImage}
             className="flex-row gap-3 items-center"
           >
-            <Text>🖼</Text>
+            <Text className="">🖼</Text>
             <Text className="text-[#218EFD] text-base font-normal">
               Choose Photos
             </Text>
@@ -159,8 +159,8 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
             onPress={takePhoto}
             className="flex-row gap-3 items-center"
           >
-            <Camera />
-            <Text className="text-[#218EFD] text-base font-normal">
+            <Camera className="flex-1" />
+            <Text className="flex-1 text-[#218EFD] text-base font-normal">
               Take a Photo
             </Text>
           </TouchableOpacity>
@@ -170,8 +170,8 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
             // onPress={() => router.push("/(main)/audio-recorder")}
             className="flex-row gap-3 items-center"
           >
-            <Voice />
-            <Text className="text-destructive text-base font-normal">
+            <Voice className="flex-1" />
+            <Text className="flex-1 text-destructive text-base font-normal">
               Record Audio
             </Text>
           </TouchableOpacity>

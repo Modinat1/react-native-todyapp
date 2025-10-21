@@ -5,7 +5,7 @@ import useAuthStore from "@/store/features/useAuthStore";
 import Feather from "@expo/vector-icons/Feather";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 
@@ -26,6 +26,8 @@ const Login = () => {
         JSON.stringify(data.data, null, 2)
       );
       console.log("token:::::::::", JSON.stringify(data.data.token, null, 2));
+      // console.log("user::::::", data.data.user);
+      // console.log("userId:::::::", data.data.user.userId);
       // console.log("Data from login:::::::::", JSON.stringify(data, null, 2));
 
       login(
@@ -33,10 +35,10 @@ const Login = () => {
           firstName: data.data.firstName,
           lastName: data.data.lastName,
           // username: data.data.username,
-          email: data.data.email,
+          email: data.data.user.email,
           gender: data.data.gender,
           image: data.data.image,
-          userId: data.data.id,
+          userId: data.data.user.userId,
           token: data.data.token,
         },
         data.data.token

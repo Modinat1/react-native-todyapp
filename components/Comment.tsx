@@ -4,7 +4,6 @@ import { colors } from "@/colorSettings";
 import useCommentStore from "@/store/features/useCommentStore";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Audio } from "expo-av";
-import * as FileSystem from "expo-file-system";
 import { useState } from "react";
 import {
   ActivityIndicator,
@@ -22,6 +21,7 @@ import {
 // import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { attachmentType } from "@/lib/types";
 import Toast from "react-native-toast-message";
+import AudioWaveForm from "./AudioWaveForm";
 import Loader from "./Loader";
 
 interface CommentProps {
@@ -47,6 +47,7 @@ const Comment = ({
   // const postComment = usePostComment(todoId);
   // console.log("todoId from comment again::::", todoId);
 
+  const [isPlaying, setIsPlaying] = useState(false);
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
 
@@ -85,15 +86,15 @@ const Comment = ({
   }
 
   const todoComments = comments?.comments;
-  // console.log("data from comment:::", JSON.stringify(todoComments, null, 2));
+  console.log("data from comment:::", JSON.stringify(todoComments, null, 2));
 
-  const downloadFile = async (uri) => {
-    const fileUri = FileSystem.documentDirectory + uri.split("/").pop();
-    const { uri: localUri } = await FileSystem.downloadAsync(uri, fileUri);
-    alert("File downloaded to: " + localUri);
-  };
+  // const downloadFile = async (uri: string | null) => {
+  //   const fileUri = FileSystem.documentDirectory + uri.split("/").pop();
+  //   const { uri: localUri } = await FileSystem.downloadAsync(uri, fileUri);
+  //   alert("File downloaded to: " + localUri);
+  // };
 
-  const playAudio = async (uri) => {
+  const playAudio = async (uri: string) => {
     const { sound } = await Audio.Sound.createAsync({ uri });
     await sound.playAsync();
   };
@@ -138,13 +139,17 @@ const Comment = ({
                 );
               } else if (attachment.type === "audio") {
                 return (
-                  <View
+                  <TouchableOpacity
                     key={index}
+                    onPress={() => playAudio(attachment.uri)}
                     className="flex-row items-center gap-2 p-2 bg-gray-200 rounded-lg"
                   >
-                    <Text>🔊</Text>
-                    <Text>Play Audio</Text>
-                  </View>
+                    <AudioWaveForm
+                      audioUri={attachment.uri}
+                      isPlaying={isPlaying}
+                      setIsPlaying={setIsPlaying}
+                    />
+                  </TouchableOpacity>
                 );
               }
             })}
@@ -224,15 +229,19 @@ const Comment = ({
                               );
                             }
 
-                            if (att.type === "audio") {
+                            if (att?.type === "voice") {
                               return (
-                                <View
+                                <TouchableOpacity
                                   key={index}
+                                  onPress={() => playAudio(att?.url)}
                                   className="flex-row items-center gap-2 p-2 bg-gray-200 rounded-lg"
                                 >
-                                  <Text>🔊</Text>
-                                  <Text>Play Audio</Text>
-                                </View>
+                                  <AudioWaveForm
+                                    audioUri={att?.url}
+                                    isPlaying={isPlaying}
+                                    setIsPlaying={setIsPlaying}
+                                  />
+                                </TouchableOpacity>
                               );
                             }
 
