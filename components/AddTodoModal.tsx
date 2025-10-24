@@ -9,6 +9,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 
 import { colors } from "@/colorSettings";
+import { formatTime } from "@/lib/utils";
 import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import { useState } from "react";
 import {
@@ -23,7 +24,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import Toast from "react-native-toast-message";
 import { useAppStore } from "../store/store";
 import DatePicker from "./DatePicker";
-// import TimePicker from "./TimePicker";
+import TimeModal from "./TimeModal";
 
 type AddTodoModalProps = {
   visible: boolean;
@@ -32,19 +33,15 @@ type AddTodoModalProps = {
 
 export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
   const { selectedTheme } = useAppStore();
-  const {
-    openCalenderSheet,
-    closeCalenderSheet,
-    // openTimeSheet,
-    // closeTimeSheet,
-  } = useBottomSheetStore();
+  const { openCalenderSheet, closeCalenderSheet } = useBottomSheetStore();
 
   const [task, setTask] = useState("");
 
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [dueDate, setDueDate] = useState("");
-  const [dueTime, setDueTime] = useState("");
+  const [dueTime, setDueTime] = useState(new Date());
+  const [openTimeModal, setOpenTimeModal] = useState(false);
 
   const handleSetDueDate = (date: string) => {
     setDueDate(date);
@@ -57,7 +54,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
       theme: string;
       status: string;
       dueDate: string;
-      dueTime: string;
+      dueTime: Date;
     }) => TodoServices.postTodo(payload),
     onSuccess: (data) => {
       // console.log("data:::::::::", data.data);
@@ -104,10 +101,10 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
       dueTime: dueTime,
     };
 
-    console.log("Todo payload:::::::::", payload);
+    // console.log("Todo payload:::::::::", payload);
 
-    const res = await mutateAsync(payload);
-    console.log("res posting todo::::::", res.data);
+    await mutateAsync(payload);
+    // console.log("res posting todo::::::", res.data);
   };
 
   const showDatePicker = () => {
@@ -124,20 +121,6 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
       ),
     });
   };
-
-  // const showTimePicker = () => {
-  //   openTimeSheet({
-  //     timeSnapPoints: ["40%"],
-  //     timeContent: (
-  //       <TimePicker
-  //         visible={true}
-  //         onClose={() => {
-  //           closeTimeSheet();
-  //         }}
-  //       />
-  //     ),
-  //   });
-  // };
 
   return (
     <KeyboardAwareScrollView
@@ -173,36 +156,18 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
           </Text>
         </TouchableOpacity>
 
-        <View className="flex-row gap-3 items-center">
+        <TouchableOpacity
+          className="flex-row gap-3 items-center mt-3"
+          onPress={() => setOpenTimeModal(true)}
+        >
           <ClockIcon />
-          <TextInput
-            placeholder="Due Time"
-            value={dueTime}
-            onChangeText={setDueTime}
-            style={styles.input}
-            placeholderTextColor="#A9B0C5"
-            multiline
-          />
-        </View>
-
-        {/* <TouchableOpacity onPress={showTimePicker}>
-          <ClockIcon />
-        </TouchableOpacity> */}
+          <Text className="text-[#A9B0C5]">
+            {dueTime ? formatTime(dueTime) : "Due Time"}
+          </Text>
+        </TouchableOpacity>
 
         {/* Add button */}
         <View className="flex-row justify-end items-center border-b pb-5 border-secondary-foreground">
-          {/* <View className="flex-row items-center gap-5">
-            <TodoListIcon />
-            <TouchableOpacity onPress={showDatePicker}>
-              <CalenderIcon />
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={showTimePicker}>
-              <ClockIcon />
-            </TouchableOpacity>
-            <FlagIcon />
-          </View>  */}
-
           <TouchableOpacity onPress={handleAdd} disabled={isPending}>
             {isPending ? (
               <ActivityIndicator color={colors.primary.DEFAULT} size={20} />
@@ -229,6 +194,13 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
         {/* <EmojiPicker /> */}
         <Text className="text-center text-destructive text-base">{error}</Text>
       </View>
+
+      <TimeModal
+        openTimeModal={openTimeModal}
+        setOpenTimeModal={setOpenTimeModal}
+        dueTime={dueTime}
+        setDueTime={setDueTime}
+      />
     </KeyboardAwareScrollView>
   );
 }
@@ -236,7 +208,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    justifyContent: "flex-end",
+    // justifyContent: "flex-end",
   },
   container: {
     backgroundColor: "white",

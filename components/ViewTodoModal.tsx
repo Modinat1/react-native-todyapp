@@ -7,21 +7,20 @@ import {
   TimeSvg,
 } from "@/assets/svgs/svg";
 import { colors } from "@/colorSettings";
-import Comment from "@/components/Comment";
 import Container from "@/components/Container";
 import DatePicker from "@/components/DatePicker";
 import MediaModal from "@/components/MediaModal";
-import TimePicker from "@/components/TimePicker";
-import { formatTime } from "@/lib/utils";
+import { formatTime, getThemeColor } from "@/lib/utils";
 import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
-import { useAppStore } from "@/store/store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useState } from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
+import Comment from "./Comment";
 import Loader from "./Loader";
+import TimeModal from "./TimeModal";
 
 interface ViewTodoModalProps {
   onClose: () => void;
@@ -30,9 +29,9 @@ interface ViewTodoModalProps {
 
 const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
   const { openSheet, closeSheet } = useBottomSheetStore();
-  const { selectedTheme } = useAppStore();
   const [activeIcon, setActiveIcon] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [openTimeModal, setOpenTimeModal] = useState(false);
   const [commentModalVisible, setCommentModalVisible] = useState(false);
 
   const [openToolTip, setOpenToolTip] = useState(false);
@@ -60,27 +59,13 @@ const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
     });
   };
 
-  const showTimePicker = () => {
-    openSheet({
-      snapPoints: ["60%"],
-      content: (
-        <TimePicker
-          visible={true}
-          onClose={() => {
-            closeSheet();
-          }}
-        />
-      ),
-    });
-  };
-
   const handleUpdateTodoStatus = async () => {
     try {
       await updateTodoStatus({ status: "completed" });
 
       Toast.show({
         type: "success",
-        text1: "Todo status updated successfully ✅",
+        text1: "Todo status updated successfully",
       });
     } catch (error: any) {
       console.log(error, "error updating todo status");
@@ -110,7 +95,9 @@ const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
                 justifyContent: "center",
                 alignItems: "center",
                 borderWidth: 2,
-                borderColor: selectedTheme.color,
+                borderColor: getThemeColor(
+                  todoData?.theme || colors.primary.DEFAULT
+                ),
                 borderRadius: 999,
                 width: 20,
                 height: 20,
@@ -122,7 +109,9 @@ const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
                   width: 8,
                   height: 8,
                   borderRadius: 999,
-                  backgroundColor: selectedTheme.color,
+                  backgroundColor: getThemeColor(
+                    todoData?.theme || colors.primary.DEFAULT
+                  ),
                 }}
               />
             </View>
@@ -146,6 +135,12 @@ const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
               {formatTime(todoData?.createdAt)}
             </Text>
           </View>
+
+          {todoData?.status === "overdue" && (
+            <Text className="text-destructive">
+              Complete your task, this task is overdue 🙄🙄🙄
+            </Text>
+          )}
 
           <View className="flex-row justify-between items-center">
             <View className="flex-row items-center gap-5 my-3">
@@ -189,7 +184,7 @@ const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
               <TouchableOpacity
                 onPress={() => {
                   setActiveIcon("time");
-                  showTimePicker();
+                  setOpenTimeModal(true);
                 }}
               >
                 <TimeSvg
@@ -202,7 +197,6 @@ const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
               <TouchableOpacity
                 onPress={() => {
                   setActiveIcon("flag");
-                  // showTimePicker();
                 }}
               >
                 <FlagSvg
@@ -238,17 +232,23 @@ const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
 
       {activeIcon === "comment" && (
         <Comment
+          todoId={todoId}
           commentModalVisible={commentModalVisible}
           setCommentModalVisible={setCommentModalVisible}
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
-          todoId={todoId}
         />
       )}
 
       <MediaModal
+        todoId={todoId}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
+      />
+
+      <TimeModal
+        openTimeModal={openTimeModal}
+        setOpenTimeModal={setOpenTimeModal}
       />
     </Container>
   );

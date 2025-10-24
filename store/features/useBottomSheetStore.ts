@@ -39,6 +39,16 @@ interface BottomSheetState {
     timeSnapPoints?: string[];
   }) => void;
   closeTimeSheet: () => void;
+
+  // comment sheet
+  isCommentOpen: boolean;
+  commentContent: React.ReactNode;
+  commentSnapPoints?: string[];
+  openCommentSheet: (props: {
+    commentContent: React.ReactNode;
+    commentSnapPoints?: string[];
+  }) => void;
+  closeCommentSheet: () => void;
 }
 
 export const useBottomSheetStore = create<BottomSheetState>((set) => ({
@@ -73,4 +83,12 @@ export const useBottomSheetStore = create<BottomSheetState>((set) => ({
   openTimeSheet: ({ timeContent, timeSnapPoints }) =>
     set({ isTimeOpen: true, timeContent, timeSnapPoints }),
   closeTimeSheet: () => set({ isTimeOpen: false, timeContent: null }),
+
+  // comment sheet
+  isCommentOpen: false,
+  commentContent: null,
+  commentSnapPoints: ["40%"],
+  openCommentSheet: ({ commentContent, commentSnapPoints }) =>
+    set({ isCommentOpen: true, commentContent, commentSnapPoints }),
+  closeCommentSheet: () => set({ isCommentOpen: false, commentContent: null }),
 }));

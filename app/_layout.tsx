@@ -15,11 +15,14 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { queryClient } from "@/hooks/useQueryClient";
 import { registerForPushNotifications } from "@/lib/notification";
 import { registerNotificationListeners } from "@/lib/notificationListener";
+import { timePickerCustomTheme } from "@/lib/utils";
 import useAuthStore from "@/store/features/useAuthStore";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { QueryClientProvider } from "@tanstack/react-query";
 import * as Notifications from "expo-notifications";
 import { useEffect } from "react";
+import { Provider as PaperProvider } from "react-native-paper";
+import { en, registerTranslation } from "react-native-paper-dates";
 import Toast from "react-native-toast-message";
 
 Notifications.setNotificationHandler({
@@ -31,6 +34,8 @@ Notifications.setNotificationHandler({
     shouldShowList: true,
   }),
 });
+
+registerTranslation("en", en);
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -58,22 +63,26 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView className="flex-1">
-      <ThemeProvider value={colorScheme === "light" ? DarkTheme : DefaultTheme}>
-        <QueryClientProvider client={queryClient}>
-          <BottomSheetModalProvider>
-            <Stack>
-              <Stack.Screen name="index" options={{ headerShown: false }} />
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              <Stack.Screen name="(main)" options={{ headerShown: false }} />
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-            <GlobalBottomSheet />
-            <Toast />
-          </BottomSheetModalProvider>
-        </QueryClientProvider>
-        <StatusBar style="auto" />
-      </ThemeProvider>
+      <PaperProvider theme={timePickerCustomTheme}>
+        <ThemeProvider
+          value={colorScheme === "light" ? DarkTheme : DefaultTheme}
+        >
+          <QueryClientProvider client={queryClient}>
+            <BottomSheetModalProvider>
+              <Stack>
+                <Stack.Screen name="index" options={{ headerShown: false }} />
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                <Stack.Screen name="(main)" options={{ headerShown: false }} />
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+              <GlobalBottomSheet />
+              <Toast />
+            </BottomSheetModalProvider>
+          </QueryClientProvider>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </PaperProvider>
     </GestureHandlerRootView>
   );
 }

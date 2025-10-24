@@ -1,14 +1,13 @@
 import { CarIcon, Cloud, Reserve, Sun, Timer } from "@/assets";
 import { colors } from "@/colorSettings";
 import { formatDate } from "@/lib/utils";
-import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
-import AntDesign from "@expo/vector-icons/AntDesign";
+// import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import { useMemo, useState } from "react";
 import { Text, View } from "react-native";
 import { Calendar } from "react-native-calendars";
 import Button from "./Button";
 import Container from "./Container";
-import TimePicker from "./TimePicker";
+// import TimePicker from "./TimePicker";
 
 type DatePickerProps = {
   visible: boolean;
@@ -22,7 +21,7 @@ const DatePicker = ({
   onSelectedDueDate,
 }: DatePickerProps) => {
   const [selected, setSelected] = useState("");
-  const { openTimeSheet, closeTimeSheet } = useBottomSheetStore();
+  // const { openTimeSheet, closeTimeSheet } = useBottomSheetStore();
 
   console.log("SELECTED DATE", selected);
 
@@ -71,19 +70,19 @@ const DatePicker = ({
     ];
   }, []);
 
-  const showTimePicker = () => {
-    openTimeSheet({
-      timeSnapPoints: ["60%"],
-      timeContent: (
-        <TimePicker
-          visible={true}
-          onClose={() => {
-            closeTimeSheet();
-          }}
-        />
-      ),
-    });
-  };
+  // const showTimePicker = () => {
+  //   openTimeSheet({
+  //     timeSnapPoints: ["60%"],
+  //     timeContent: (
+  //       <TimePicker
+  //         visible={true}
+  //         onClose={() => {
+  //           closeTimeSheet();
+  //         }}
+  //       />
+  //     ),
+  //   });
+  // };
 
   return (
     <Container>
@@ -149,6 +148,15 @@ const DatePicker = ({
         />
       </View>
 
+      <Button
+        className="w-[80%] flex-row justify-center mx-auto gap-3 items-center mt-10"
+        onPress={onClose}
+      >
+        <Timer />
+        <Text className="text-white font-medium">Schedule</Text>
+      </Button>
+
+      {/* 
       <View className="flex-row justify-between items-center gap-3 mt-10">
         <Button
           onPress={showTimePicker}
@@ -165,7 +173,7 @@ const DatePicker = ({
           <Timer />
           <Text className="text-white font-medium">Schedule</Text>
         </Button>
-      </View>
+      </View> */}
     </Container>
   );
 };

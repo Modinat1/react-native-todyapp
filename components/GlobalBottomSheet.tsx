@@ -28,21 +28,31 @@ export const GlobalBottomSheet = () => {
     timeSnapPoints = ["40%"],
     timeContent,
     closeTimeSheet,
+
+    //comment sheet
+    isCommentOpen,
+    commentSnapPoints = ["40%"],
+    commentContent,
+    closeCommentSheet,
   } = useBottomSheetStore();
 
   const ref = useRef<BottomSheetModal>(null);
   const audioRef = useRef<BottomSheetModal>(null);
   const calenderRef = useRef<BottomSheetModal>(null);
   const timeRef = useRef<BottomSheetModal>(null);
+  const commentRef = useRef<BottomSheetModal>(null);
 
   const [modalKey, setModalKey] = useState(0);
   const [audioModalKey, setAudioModalKey] = useState(0);
   const [calenderModalKey, setCalenderModalKey] = useState(0);
   const [timeModalKey, setTimeModalKey] = useState(0);
+  const [commentModalKey, setCommentModalKey] = useState(0);
+
   const [shouldOpen, setShouldOpen] = useState(false);
   const [shouldOpenAudio, setShouldOpenAudio] = useState(false);
   const [shouldOpenCalender, setShouldOpenCalender] = useState(false);
   const [shouldOpenTime, setShouldOpenTime] = useState(false);
+  const [shouldOpenComment, setShouldOpenComment] = useState(false);
 
   // Handle normal sheet
   useEffect(() => {
@@ -119,6 +129,25 @@ export const GlobalBottomSheet = () => {
       });
     }
   }, [timeModalKey, shouldOpenTime]);
+
+  // Handle comment sheet
+  useEffect(() => {
+    if (isCommentOpen) {
+      setCommentModalKey((prev) => prev + 1);
+      setShouldOpenComment(true);
+    } else if (commentRef.current) {
+      commentRef.current.dismiss();
+    }
+  }, [isCommentOpen]);
+
+  useEffect(() => {
+    if (shouldOpenComment) {
+      InteractionManager.runAfterInteractions(() => {
+        commentRef.current?.present();
+        setShouldOpenComment(false);
+      });
+    }
+  }, [commentModalKey, shouldOpenComment]);
 
   return (
     <>
@@ -204,6 +233,27 @@ export const GlobalBottomSheet = () => {
         )}
       >
         {timeContent}
+      </BottomSheetModal>
+
+      {/* comment sheet */}
+      <BottomSheetModal
+        key={`comment-${modalKey}`}
+        ref={commentRef}
+        index={0}
+        enableDynamicSizing={false}
+        snapPoints={commentSnapPoints}
+        onDismiss={closeCommentSheet}
+        backgroundStyle={{ backgroundColor: "white" }}
+        backdropComponent={(props) => (
+          <BottomSheetBackdrop
+            {...props}
+            appearsOnIndex={0}
+            disappearsOnIndex={-1}
+            opacity={0.5}
+          />
+        )}
+      >
+        {commentContent}
       </BottomSheetModal>
     </>
   );

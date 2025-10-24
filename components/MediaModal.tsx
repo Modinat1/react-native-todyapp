@@ -10,9 +10,14 @@ import AudioModal from "./AudioModal";
 interface MediaModalProps {
   modalVisible: boolean;
   setModalVisible: (modalVisible: boolean) => void;
+  todoId: string;
 }
 
-const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
+const MediaModal = ({
+  modalVisible,
+  setModalVisible,
+  todoId,
+}: MediaModalProps) => {
   // const router = useRouter();
   const { addAttachment } = useCommentStore();
   const { openAudioSheet, closeAudioSheet } = useBottomSheetStore();
@@ -32,7 +37,7 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
         //   name: file.name || `doc-${Date.now()}-${index}`,
         //   mimeType: file.mimeType || "application/octet-stream",
         // });
-        addAttachment({
+        addAttachment(todoId, {
           uri: file.uri,
           type: "doc",
           name: file.name || `doc-${Date.now()}-${index}`,
@@ -60,7 +65,7 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
         //   name: asset.fileName || `photo-${Date.now()}-${index}.jpg`,
         //   mimeType: asset.type || "image/jpeg",
         // });
-        addAttachment({
+        addAttachment(todoId, {
           uri: asset.uri,
           type: "image", // you can keep a logical type for your UI
           name: asset.fileName || `photo-${Date.now()}-${index}.jpg`,
@@ -88,16 +93,16 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
     if (!result.canceled && result.assets?.length) {
       result.assets.forEach((asset, index) => {
         // addAttachment({
-        //   uri: asset.uri,
-        //   type: "image",
-        //   name: asset.fileName || `photo-${Date.now()}-${index}.jpg`,
-        //   mimeType: asset.type || "image/jpeg",
+        // uri: asset.uri,
+        // type: "image",
+        // name: asset.fileName || `photo-${Date.now()}-${index}.jpg`,
+        // mimeType: "image/jpeg",
         // });
-        addAttachment({
+        addAttachment(todoId, {
           uri: asset.uri,
-          type: "image", // you can keep a logical type for your UI
+          type: "image",
           name: asset.fileName || `photo-${Date.now()}-${index}.jpg`,
-          mimeType: "image/jpeg", // hardcode a valid MIME for photos
+          mimeType: "image/jpeg",
         });
       });
       setModalVisible(false);
@@ -122,12 +127,13 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
   return (
     <Modal
       visible={modalVisible}
-      transparent={true}
+      transparent
       animationType="fade"
       onRequestClose={() => setModalVisible(false)}
     >
       <View style={styles.overlay}>
-        <View className="bg-white rounded-2xl w-[90%] px-6 py-4 gap-5">
+        <View className="bg-white rounded-2xl w-[90%] px-6 py-4 space-y-5">
+          {/* Close Button */}
           <TouchableOpacity
             className="flex-row justify-end"
             onPress={() => setModalVisible(false)}
@@ -135,43 +141,54 @@ const MediaModal = ({ modalVisible, setModalVisible }: MediaModalProps) => {
             <AntDesign name="close" size={20} color="#A0AAB8" />
           </TouchableOpacity>
 
+          {/* File / Document */}
           <TouchableOpacity
             onPress={pickDocument}
-            className="flex-row gap-3 items-center"
+            className="flex-row items-center mb-3"
           >
-            <Paper className="flex-1" />
-            <Text className="flex-1 text-primary text-base font-normal">
-              File/Document
+            <View className="items-center mr-4">
+              <Paper width={22} height={22} />
+            </View>
+            <Text className="text-primary text-base font-normal">
+              File / Document
             </Text>
           </TouchableOpacity>
 
+          {/* Choose Photos */}
           <TouchableOpacity
             onPress={pickImage}
-            className="flex-row gap-3 items-center"
+            className="flex-row items-center mb-3"
           >
-            <Text className="">🖼</Text>
+            <View className="items-center mr-4">
+              <Text className="text-lg">🖼</Text>
+            </View>
             <Text className="text-[#218EFD] text-base font-normal">
               Choose Photos
             </Text>
           </TouchableOpacity>
 
+          {/* Take a Photo */}
           <TouchableOpacity
             onPress={takePhoto}
-            className="flex-row gap-3 items-center"
+            className="flex-row items-center mb-3"
           >
-            <Camera className="flex-1" />
-            <Text className="flex-1 text-[#218EFD] text-base font-normal">
+            <View className="items-center mr-4">
+              <Camera width={22} height={22} />
+            </View>
+            <Text className="text-[#218EFD] text-base font-normal">
               Take a Photo
             </Text>
           </TouchableOpacity>
 
+          {/* Record Audio */}
           <TouchableOpacity
-            onPress={() => showAudioModal()}
-            // onPress={() => router.push("/(main)/audio-recorder")}
-            className="flex-row gap-3 items-center"
+            onPress={showAudioModal}
+            className="flex-row items-center mb-3"
           >
-            <Voice className="flex-1" />
-            <Text className="flex-1 text-destructive text-base font-normal">
+            <View className="items-center mr-4">
+              <Voice width={22} height={22} />
+            </View>
+            <Text className="text-destructive text-base font-normal">
               Record Audio
             </Text>
           </TouchableOpacity>

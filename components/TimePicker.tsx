@@ -1,32 +1,45 @@
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { useState } from "react";
 import { View } from "react-native";
+import { TimePickerModal } from "react-native-paper-dates";
 
-type TimePickerProps = {
-  visible: boolean;
-  onClose: () => void;
-};
+interface TimeObject {
+  hours: number;
+  minutes: number;
+}
 
-const TimePicker = ({ visible, onClose }: TimePickerProps) => {
-  const [time, setTime] = useState(new Date());
+interface TimePickerProps {
+  openTimeModal: boolean;
+  setOpenTimeModal: (open: boolean) => void;
+  dueTime?: Date;
+  setDueTime?: (dueTime: Date) => void;
+}
 
-  console.log("TIME:::::::", time);
+const TimePicker = ({
+  openTimeModal,
+  setOpenTimeModal,
+  dueTime,
+  setDueTime,
+}: TimePickerProps) => {
+  const onConfirm = ({ hours, minutes }: TimeObject) => {
+    setOpenTimeModal(false);
 
-  const onChange = (event: any, selectedTime?: Date) => {
-    if (selectedTime) {
-      setTime(selectedTime);
-    }
+    const newDueTime = new Date(dueTime ?? new Date());
+    newDueTime.setHours(hours, minutes, 0, 0);
+
+    setDueTime?.(newDueTime);
   };
+  console.log(dueTime);
 
   return (
-    <View style={{ marginTop: 50 }}>
-      <DateTimePicker
-        value={time}
-        mode="time"
-        is24Hour={false}
-        display="clock" // This gives the circular clock UI
-        onChange={onChange}
-        // accentColor="#ff6347"
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <TimePickerModal
+        visible={openTimeModal}
+        onDismiss={() => setOpenTimeModal(false)}
+        onConfirm={onConfirm}
+        // hours={hours}
+        // minutes={dueTime?.minutes}
+        label="Select time"
+        animationType="fade"
+        locale="en"
       />
     </View>
   );
@@ -34,52 +47,56 @@ const TimePicker = ({ visible, onClose }: TimePickerProps) => {
 
 export default TimePicker;
 
-// components/TimePicker.tsx
-
 // import { colors } from "@/colorSettings";
-// import { useState } from "react";
-// import { View } from "react-native";
-// import DateTimePickerModal from "react-native-modal-datetime-picker";
+// import DateTimePicker, {
+//   DateTimePickerEvent,
+// } from "@react-native-community/datetimepicker";
+// import { Platform, View } from "react-native";
 
-// type TimePickerProps = {
-//   visible: boolean;
-//   onClose: () => void;
-//   onConfirm?: (time: Date) => void;
-//   accentColor?: string;
-// };
+// interface TimePickerProps {
+//   openTimeModal: boolean;
+//   setOpenTimeModal: (openTimeModal: boolean) => void;
+//   dueTime?: Date;
+//   setDueTime?: (dueTime: Date) => void;
+//   accentColor?: string; // Add custom accent color prop
+// }
 
 // const TimePicker = ({
-//   visible,
-//   onClose,
-//   onConfirm,
-//   accentColor = "#f97316", // default orange accent
+// openTimeModal,
+// setOpenTimeModal,
+// dueTime,
+// setDueTime,
+//   accentColor = colors.primary.DEFAULT, // Your app's primary color
 // }: TimePickerProps) => {
-//   const [selectedTime, setSelectedTime] = useState(new Date());
-
-//   const handleConfirm = (time: Date) => {
-//     setSelectedTime(time);
-//     onConfirm?.(time);
-//     onClose();
+//   const onChange = (event: DateTimePickerEvent, selectedTime?: Date) => {
+//     if (event.type === "set" && selectedTime) {
+//       setDueTime?.(selectedTime);
+//     }
+//     console.log(selectedTime);
+//     console.log(dueTime);
+//     setOpenTimeModal(false);
 //   };
-
-//   console.log("selcted time:::::::::", selectedTime);
 
 //   return (
 //     <View>
-//       <DateTimePickerModal
-//         isVisible={visible}
-//         mode="time"
-//         date={selectedTime}
-//         is24Hour={false}
-//         onConfirm={handleConfirm}
-//         onCancel={onClose}
-//         confirmTextIOS="Confirm"
-//         cancelTextIOS="Cancel"
-//         buttonTextColorIOS={accentColor}
-//         accentColor={colors.primary.DEFAULT}
-//         display="clock"
-//         themeVariant={colors.primary.DEFAULT}
-//       />
+//       {openTimeModal && (
+//         <DateTimePicker
+//           value={dueTime ?? new Date()}
+//           mode="time"
+//           is24Hour={false}
+//           display={Platform.OS === "ios" ? "spinner" : "clock"}
+//           onChange={onChange}
+//           // iOS specific styling
+//           themeVariant="light" // or "dark"
+//           accentColor="#24A19C"
+//           // accentColor={accentColor} // Works on iOS
+//           // Android specific styling
+//           {...(Platform.OS === "android" && {
+//             positiveButton: { label: "OK", textColor: accentColor },
+//             negativeButton: { label: "Cancel", textColor: accentColor },
+//           })}
+//         />
+//       )}
 //     </View>
 //   );
 // };
