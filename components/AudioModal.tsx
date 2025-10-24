@@ -17,157 +17,181 @@ const { width } = Dimensions.get("window");
 
 interface AudioRecorderProps {
   onCancel?: () => void;
-  onAttachSuccess?: () => void;
+  closeAudioSheet?: () => void;
   onAttach?: (uri: string) => void;
+  todoId: string;
 }
 
 const AudioRecorderScreen: React.FC<AudioRecorderProps> = ({
   onCancel,
   onAttach,
-  onAttachSuccess,
+  closeAudioSheet,
+  todoId,
 }) => {
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [duration, setDuration] = useState(0);
   const [audioLevels, setAudioLevels] = useState<number[]>([]);
   const [recordingUri, setRecordingUri] = useState<string>("");
+  const [hasPermission, setHasPermission] = useState(false);
 
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const audioLevelRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { addAttachment } = useCommentStore();
 
   useEffect(() => {
-    return () => {
-      if (recording) {
-        recording.stopAndUnloadAsync();
-      }
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      if (audioLevelRef.current) {
-        clearInterval(audioLevelRef.current);
-      }
-    };
-  }, [recording]);
+    (async () => {
+      const granted = await requestPermissions();
+      setHasPermission(granted);
+    })();
+  }, []);
 
-  const requestPermissions = async () => {
-    if (Platform.OS === "android") {
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-          {
-            title: "Audio Recording Permission",
-            message:
-              "This app needs access to your microphone to record audio.",
-            buttonNeutral: "Ask Me Later",
-            buttonNegative: "Cancel",
-            buttonPositive: "OK",
-          }
-        );
-        return granted === PermissionsAndroid.RESULTS.GRANTED;
-      } catch (err) {
-        console.warn(err);
-        return false;
+  useEffect(() => {
+    return () => {
+      cleanupRecording();
+    };
+  }, []);
+
+  const cleanupRecording = async () => {
+    try {
+      if (recording) {
+        await recording.stopAndUnloadAsync();
       }
-    }
-    return true;
+    } catch {}
+    if (intervalRef.current) clearInterval(intervalRef.current);
   };
 
-  const startRecording = async () => {
-    try {
-      const hasPermission = await requestPermissions();
-      if (!hasPermission) {
-        Alert.alert(
-          "Permission denied",
-          "Cannot record audio without microphone permission"
-        );
-        return;
-      }
+  // ✅ Request permissions (Android + Expo)
+  const requestPermissions = async (): Promise<boolean> => {
+    let androidGranted = true;
 
-      await Audio.requestPermissionsAsync();
+    if (Platform.OS === "android") {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        {
+          title: "Audio Recording Permission",
+          message: "This app needs access to your microphone to record audio.",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK",
+        }
+      );
+      androidGranted = granted === PermissionsAndroid.RESULTS.GRANTED;
+    }
+
+    const { status: expoStatus } = await Audio.requestPermissionsAsync();
+    return androidGranted && expoStatus === "granted";
+  };
+
+  // ✅ Start Recording
+  const startRecording = async () => {
+    if (!hasPermission) {
+      Alert.alert("Permission denied", "Microphone permission is required");
+      return;
+    }
+
+    try {
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
       });
 
-      const { recording: newRecording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
-      );
+      const recordingOptions = {
+        ...Audio.RecordingOptionsPresets.HIGH_QUALITY,
+        android: {
+          ...Audio.RecordingOptionsPresets.HIGH_QUALITY.android,
+          meteringEnabled: true,
+        },
+        ios: {
+          ...Audio.RecordingOptionsPresets.HIGH_QUALITY.ios,
+          meteringEnabled: true,
+        },
+      };
+
+      const newRecording = new Audio.Recording();
+      await newRecording.prepareToRecordAsync(recordingOptions);
+      await newRecording.startAsync();
 
       setRecording(newRecording);
       setIsRecording(true);
       setDuration(0);
       setAudioLevels([]);
 
-      // Start timer
-      intervalRef.current = setInterval(() => {
-        setDuration((prev) => prev + 0.01);
-      }, 10);
-
-      // Simulate audio levels for waveform
-      audioLevelRef.current = setInterval(() => {
-        const level = Math.random() * 100;
-        setAudioLevels((prev) => [...prev.slice(-50), level]);
-      }, 100);
-    } catch (err) {
-      console.error("Failed to start recording", err);
-      Alert.alert("Error", "Failed to start recording");
+      startTimerAndWaveform(newRecording);
+    } catch (error) {
+      console.error("Failed to start recording:", error);
+      Alert.alert("Error", "Could not start recording");
     }
   };
 
+  // ✅ Timer + Waveform
+  const startTimerAndWaveform = (rec: Audio.Recording) => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
+    intervalRef.current = setInterval(async () => {
+      const status = await rec.getStatusAsync();
+
+      if (status.isRecording) {
+        // sync actual duration
+        setDuration(status.durationMillis / 1000);
+
+        if (typeof status.metering === "number") {
+          const level = Math.min(
+            Math.max((status.metering + 160) / 1.6, 0),
+            100
+          );
+          setAudioLevels((prev) => [...prev.slice(-50), level]);
+        }
+      }
+    }, 1000);
+  };
+
+  // ✅ Stop Recording
   const stopRecording = async () => {
     if (!recording) return;
-
     try {
-      setIsRecording(false);
       await recording.stopAndUnloadAsync();
-
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      if (audioLevelRef.current) {
-        clearInterval(audioLevelRef.current);
-      }
-
+      const status = await recording.getStatusAsync();
+      setDuration(status.durationMillis / 1000);
       const uri = recording.getURI();
-      if (uri) {
-        setRecordingUri(uri);
-      }
+      if (uri) setRecordingUri(uri);
+
+      cleanupRecording();
+      setIsRecording(false);
       setRecording(null);
-    } catch (error) {
-      console.error("Failed to stop recording", error);
+    } catch (err) {
+      console.error("Failed to stop recording", err);
     }
   };
 
+  // ✅ Play Recording
   const playRecording = async () => {
     if (!recordingUri) return;
-
     try {
       const { sound } = await Audio.Sound.createAsync({ uri: recordingUri });
       await sound.playAsync();
-    } catch (error) {
-      console.error("Failed to play recording", error);
+    } catch (err) {
+      console.error("Failed to play recording", err);
     }
   };
 
   const retakeRecording = () => {
+    cleanupRecording();
     setRecordingUri("");
     setDuration(0);
     setAudioLevels([]);
   };
 
   const handleCancel = () => {
-    if (recording) {
-      stopRecording();
-    }
+    cleanupRecording();
     onCancel?.();
+    closeAudioSheet?.();
   };
 
   const handleAttach = () => {
     if (recordingUri) {
       const fileName = `audio-${Date.now()}.m4a`;
 
-      addAttachment({
+      addAttachment(todoId, {
         uri: recordingUri,
         type: "audio",
         name: fileName,
@@ -175,7 +199,7 @@ const AudioRecorderScreen: React.FC<AudioRecorderProps> = ({
       });
 
       onAttach?.(recordingUri);
-      onAttachSuccess?.();
+      closeAudioSheet?.();
       console.log("Audio attached:", recordingUri);
     }
   };
@@ -183,12 +207,12 @@ const AudioRecorderScreen: React.FC<AudioRecorderProps> = ({
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    const centisecs = Math.floor((seconds % 1) * 100);
     return `${mins.toString().padStart(2, "0")}:${secs
       .toString()
-      .padStart(2, "0")}.${centisecs.toString().padStart(2, "0")}`;
+      .padStart(2, "0")}`;
   };
 
+  // ✅ Waveform Renderer
   const renderWaveform = () => {
     const maxBars = Math.floor((width * 0.8) / 4);
     const bars = audioLevels.slice(-maxBars);
@@ -197,16 +221,13 @@ const AudioRecorderScreen: React.FC<AudioRecorderProps> = ({
       <View style={styles.waveformContainer}>
         {Array.from({ length: maxBars }, (_, index) => {
           const level = bars[index] || 0;
-          const height = Math.max(4, (level / 100) * 60);
+          const height = Math.max(4, (level / 100) * 80);
           return (
             <View
               key={index}
               style={[
                 styles.waveformBar,
-                {
-                  height,
-                  opacity: bars[index] ? 1 : 0.3,
-                },
+                { height, opacity: bars[index] ? 1 : 0.3 },
               ]}
             />
           );
@@ -237,13 +258,11 @@ const AudioRecorderScreen: React.FC<AudioRecorderProps> = ({
         </TouchableOpacity>
       </View>
 
-      {/* Title */}
       <Text style={styles.title}>Record Audio</Text>
 
       {/* Waveform */}
       <View style={styles.waveformWrapper}>{renderWaveform()}</View>
 
-      {/* Timer */}
       <Text style={styles.timer}>{formatTime(duration)}</Text>
 
       {/* Controls */}
@@ -279,6 +298,8 @@ const AudioRecorderScreen: React.FC<AudioRecorderProps> = ({
   );
 };
 
+export default AudioRecorderScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -291,22 +312,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
-  headerButton: {
-    padding: 10,
-  },
-  cancelText: {
-    color: "#ff3333",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  attachText: {
-    color: "#666",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  disabledText: {
-    color: "#333",
-  },
+  headerButton: { padding: 10 },
+  cancelText: { color: "#ff3333", fontSize: 16, fontWeight: "600" },
+  attachText: { color: "#666", fontSize: 16, fontWeight: "600" },
+  disabledText: { color: "#333" },
   title: {
     color: "#fff",
     fontSize: 20,
@@ -328,11 +337,7 @@ const styles = StyleSheet.create({
     height: 80,
     gap: 2,
   },
-  waveformBar: {
-    width: 2,
-    backgroundColor: "#666",
-    borderRadius: 1,
-  },
+  waveformBar: { width: 2, backgroundColor: "#666", borderRadius: 1 },
   timer: {
     color: "#666",
     fontSize: 32,
@@ -381,9 +386,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  recordingActive: {
-    borderColor: "#ff3333",
-  },
+  recordingActive: { borderColor: "#ff3333" },
   recordButtonInner: {
     width: 60,
     height: 60,
@@ -395,14 +398,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
   },
-  retakeButton: {
-    padding: 20,
-  },
-  retakeText: {
-    color: "#666",
-    fontSize: 14,
-    fontWeight: "600",
-  },
+  retakeButton: { padding: 20 },
+  retakeText: { color: "#666", fontSize: 14, fontWeight: "600" },
 });
-
-export default AudioRecorderScreen;

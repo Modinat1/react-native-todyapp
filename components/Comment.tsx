@@ -36,7 +36,6 @@ const Comment = ({
   setCommentModalVisible,
   todoId,
 }: CommentProps) => {
-  // const { attachments, clearAttachments } = useCommentStore();
   const {
     getAttachments,
     clearAttachments,
@@ -49,8 +48,6 @@ const Comment = ({
 
   const [isLoading, setIsLoading] = useState(false);
   const { data: comments, isLoading: commentLoading } = useGetComments(todoId);
-  const [isPlaying, setIsPlaying] = useState(false);
-  // const [comment, setComment] = useState("");
   const [error, setError] = useState("");
 
   const postComment = usePostComment(todoId);
@@ -224,11 +221,7 @@ const Comment = ({
                             onPress={() => playAudio(att?.url)}
                             style={styles.voiceAttachment}
                           >
-                            <AudioWaveForm
-                              audioUri={att?.url}
-                              isPlaying={isPlaying}
-                              setIsPlaying={setIsPlaying}
-                            />
+                            <AudioWaveForm audioUri={att?.url} />
                           </TouchableOpacity>
                         );
                       }

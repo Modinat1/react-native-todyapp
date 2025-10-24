@@ -58,8 +58,8 @@ const AttachmentPreviewer = ({
                 >
                   <AudioWaveForm
                     audioUri={attachment.uri}
-                    isPlaying={isPlaying ?? false}
-                    setIsPlaying={setIsPlaying ?? ((playing: boolean) => {})}
+                    // isPlaying={isPlaying ?? false}
+                    // setIsPlaying={setIsPlaying ?? ((playing: boolean) => {})}
                   />
                 </TouchableOpacity>
               );

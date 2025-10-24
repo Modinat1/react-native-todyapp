@@ -1,25 +1,20 @@
 import { colors } from "@/colorSettings";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import Entypo from "@expo/vector-icons/Entypo";
 import { Audio } from "expo-av";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface AudioWaveFormProps {
   audioUri: string;
-  isPlaying: boolean;
-  setIsPlaying: (playing: boolean) => void;
 }
 
-const AudioWaveForm = ({
-  audioUri,
-  isPlaying,
-  setIsPlaying,
-}: AudioWaveFormProps) => {
+const AudioWaveForm = ({ audioUri }: AudioWaveFormProps) => {
+  const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const soundRef = useRef(null);
-  const progressInterval = useRef(null);
+  const soundRef = useRef<Audio.Sound | null>(null);
 
-  // Generate waveform heights (in production, analyze actual audio)
   const waveformBars = 50;
   const [waveformHeights] = useState(() =>
     Array.from({ length: waveformBars }, () => Math.random() * 0.7 + 0.3)
@@ -34,11 +29,9 @@ const AudioWaveForm = ({
 
   const setupAudio = async () => {
     try {
-      // For Expo
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: false,
         playsInSilentModeIOS: true,
-        staysActiveInBackground: false,
       });
 
       const { sound, status } = await Audio.Sound.createAsync(
@@ -47,18 +40,26 @@ const AudioWaveForm = ({
       );
 
       soundRef.current = sound;
-      setDuration(status.durationMillis / 1000);
+      // durationMillis exists only on the success playback status; guard before using it
+      if (
+        "durationMillis" in status &&
+        typeof status.durationMillis === "number"
+      ) {
+        setDuration(status.durationMillis / 1000);
+      } else {
+        setDuration(0);
+      }
 
-      // Listen to playback status updates
       sound.setOnPlaybackStatusUpdate((status) => {
-        if (status.isLoaded) {
-          setCurrentTime(status.positionMillis / 1000);
-          setIsPlaying(status.isPlaying);
+        if (!status.isLoaded) return;
 
-          if (status.didJustFinish) {
-            setIsPlaying(false);
-            setCurrentTime(0);
-          }
+        setCurrentTime(status.positionMillis / 1000);
+        setIsPlaying(status.isPlaying);
+
+        if (status.didJustFinish) {
+          setIsPlaying(false);
+          setCurrentTime(0);
+          // sound.setPositionAsync(0); // reset position
         }
       });
     } catch (error) {
@@ -70,9 +71,6 @@ const AudioWaveForm = ({
     if (soundRef.current) {
       await soundRef.current.unloadAsync();
     }
-    if (progressInterval.current) {
-      clearInterval(progressInterval.current);
-    }
   };
 
   const togglePlay = async () => {
@@ -82,6 +80,18 @@ const AudioWaveForm = ({
       if (isPlaying) {
         await soundRef.current.pauseAsync();
       } else {
+        // replay if ended
+        const status = await soundRef.current.getStatusAsync();
+        // ensure durationMillis is defined before comparing
+        if (
+          status.isLoaded &&
+          typeof status.durationMillis === "number" &&
+          typeof status.positionMillis === "number" &&
+          status.positionMillis >= status.durationMillis
+        ) {
+          await soundRef.current.setPositionAsync(0);
+        }
+
         await soundRef.current.playAsync();
       }
     } catch (error) {
@@ -89,17 +99,13 @@ const AudioWaveForm = ({
     }
   };
 
-  const seekToPosition = async (percentage) => {
-    try {
-      if (!soundRef.current || !duration) return;
-      const position = percentage * duration * 1000; // Convert to milliseconds
-      await soundRef.current.setPositionAsync(position);
-    } catch (error) {
-      console.error("Error seeking:", error);
-    }
+  const seekToPosition = async (percentage: number) => {
+    if (!soundRef.current || !duration) return;
+    const position = percentage * duration * 1000;
+    await soundRef.current.setPositionAsync(position);
   };
 
-  const formatTime = (seconds) => {
+  const formatTime = (seconds: number) => {
     if (isNaN(seconds)) return "0:00";
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -110,13 +116,16 @@ const AudioWaveForm = ({
 
   return (
     <View style={styles.container}>
-      {/* <View style={styles.container}> */}
-      {/* Play/Pause Button */}
       <TouchableOpacity onPress={togglePlay} style={styles.playButton}>
-        <Text style={styles.playIcon}>{isPlaying ? "⏸" : "▶"}</Text>
+        <Text style={styles.playIcon}>
+          {isPlaying ? (
+            <AntDesign name="pause" size={18} color="white" />
+          ) : (
+            <Entypo name="controller-play" size={18} color="white" />
+          )}
+        </Text>
       </TouchableOpacity>
 
-      {/* Waveform */}
       <View style={styles.waveformContainer}>
         {waveformHeights.map((height, i) => {
           const barProgress = i / waveformBars;
@@ -141,7 +150,6 @@ const AudioWaveForm = ({
         })}
       </View>
 
-      {/* Time Display */}
       <Text style={styles.timeText}>{formatTime(currentTime)}</Text>
     </View>
   );
@@ -153,7 +161,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#fff",
     borderRadius: 16,
     padding: 5,
     gap: 12,
@@ -167,7 +175,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   playIcon: {
-    color: "#ffffff",
+    color: "#fff",
     fontSize: 16,
     marginLeft: 2,
   },

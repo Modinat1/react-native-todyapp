@@ -61,7 +61,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
 
       Toast.show({
         type: "success",
-        text1: "Todo added successfully ✅",
+        text1: "Todo added successfully",
         visibilityTime: 2000,
       });
 

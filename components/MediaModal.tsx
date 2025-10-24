@@ -117,7 +117,8 @@ const MediaModal = ({
       audioContent: (
         <AudioModal
           // visible={true}
-          onAttachSuccess={() => {
+          todoId={todoId}
+          closeAudioSheet={() => {
             closeAudioSheet();
           }}
         />
