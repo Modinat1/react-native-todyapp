@@ -90,11 +90,11 @@ export const useUpdateTodo = (todoId: string) => {
   });
 };
 
-export const useDeleteTodo = () => {
+export const useDeleteTodo = (todoId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (todoId: string) => {
+    mutationFn: async () => {
       const res = await TodoServices.deleteTodo(todoId);
       return res.data;
     },

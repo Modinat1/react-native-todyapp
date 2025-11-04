@@ -19,6 +19,8 @@ import { useState } from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
 import Comment from "./Comment";
+import DeleteTodoModal from "./DeleteTodo";
+import EditTodoModal from "./EditTodoModal";
 import Loader from "./Loader";
 import TimeModal from "./TimeModal";
 
@@ -28,6 +30,8 @@ interface ViewTodoModalProps {
 }
 
 const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const { openSheet, closeSheet } = useBottomSheetStore();
   const [activeIcon, setActiveIcon] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -116,7 +120,7 @@ const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
               />
             </View>
 
-            <Text className="text-lg font-medium text-black">
+            <Text className="flex-1 text-lg font-medium text-black capitalize">
               {todoData?.todoTitle}
             </Text>
           </View>
@@ -125,20 +129,31 @@ const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
             {todoData?.description}
           </Text>
 
-          <View className="flex-row gap-3 items-center my-3">
-            <MaterialCommunityIcons
-              name="clock-outline"
-              size={16}
-              color="red"
-            />
-            <Text className="text-destructive font-xs">
-              {formatTime(todoData?.createdAt)}
-            </Text>
+          <View className="flex-row justify-between items-center">
+            <View className="flex-row gap-3 items-center my-3">
+              <MaterialCommunityIcons
+                name="clock-outline"
+                size={16}
+                color="red"
+              />
+              <Text className="text-destructive font-xs">
+                {formatTime(todoData?.createdAt)}
+              </Text>
+            </View>
+
+            <View className="flex-row items-center gap-3">
+              <TouchableOpacity onPress={() => setOpenEditModal(true)}>
+                <Text>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setOpenDeleteModal(true)}>
+                <Text>Delete</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           {todoData?.status === "overdue" && (
             <Text className="text-destructive">
-              Complete your task, this task is overdue 🙄🙄🙄
+              Complete your task, this task is overdue 🙄
             </Text>
           )}
 
@@ -220,7 +235,9 @@ const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
                     color={colors.primary.DEFAULT}
                   />
                 ) : (
-                  <Text className="text-secondary">Mark as completed</Text>
+                  <>
+                    <Text className="text-secondary">Mark as completed</Text>
+                  </>
                 )}
               </TouchableOpacity>
             )}
@@ -250,6 +267,24 @@ const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
         openTimeModal={openTimeModal}
         setOpenTimeModal={setOpenTimeModal}
       />
+
+      {openEditModal && todoData && (
+        <EditTodoModal
+          todo={todoData}
+          openEditModal={openEditModal}
+          setOpenEditModal={setOpenEditModal}
+          onCloseViewTodoModal={onClose}
+        />
+      )}
+
+      {openDeleteModal && todoData && (
+        <DeleteTodoModal
+          todo={todoData}
+          openDeleteModal={openDeleteModal}
+          setOpenDeleteModal={setOpenDeleteModal}
+          onCloseViewTodoModal={onClose}
+        />
+      )}
     </Container>
   );
 };

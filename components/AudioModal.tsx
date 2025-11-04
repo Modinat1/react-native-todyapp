@@ -60,7 +60,7 @@ const AudioRecorderScreen: React.FC<AudioRecorderProps> = ({
     if (intervalRef.current) clearInterval(intervalRef.current);
   };
 
-  // ✅ Request permissions (Android + Expo)
+  // Request permissions (Android + Expo)
   const requestPermissions = async (): Promise<boolean> => {
     let androidGranted = true;
 
@@ -82,7 +82,7 @@ const AudioRecorderScreen: React.FC<AudioRecorderProps> = ({
     return androidGranted && expoStatus === "granted";
   };
 
-  // ✅ Start Recording
+  // Start Recording
   const startRecording = async () => {
     if (!hasPermission) {
       Alert.alert("Permission denied", "Microphone permission is required");
@@ -123,7 +123,7 @@ const AudioRecorderScreen: React.FC<AudioRecorderProps> = ({
     }
   };
 
-  // ✅ Timer + Waveform
+  // Timer + Waveform
   const startTimerAndWaveform = (rec: Audio.Recording) => {
     if (intervalRef.current) clearInterval(intervalRef.current);
 
@@ -145,7 +145,7 @@ const AudioRecorderScreen: React.FC<AudioRecorderProps> = ({
     }, 1000);
   };
 
-  // ✅ Stop Recording
+  // Stop Recording
   const stopRecording = async () => {
     if (!recording) return;
     try {
@@ -163,7 +163,7 @@ const AudioRecorderScreen: React.FC<AudioRecorderProps> = ({
     }
   };
 
-  // ✅ Play Recording
+  // Play Recording
   const playRecording = async () => {
     if (!recordingUri) return;
     try {
@@ -212,7 +212,7 @@ const AudioRecorderScreen: React.FC<AudioRecorderProps> = ({
       .padStart(2, "0")}`;
   };
 
-  // ✅ Waveform Renderer
+  // Waveform Renderer
   const renderWaveform = () => {
     const maxBars = Math.floor((width * 0.8) / 4);
     const bars = audioLevels.slice(-maxBars);
