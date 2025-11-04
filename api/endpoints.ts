@@ -3,6 +3,11 @@ export const AUTH_ENDPOINTS = {
   REGISTER: "/auth/register",
 };
 
+export const USER_ENDPOINTS = {
+  GET_USER: "/user",
+  UPDATE_USER: "/user",
+};
+
 export const TODO_ENDPOINTS = {
   GET_TODOS: "/todo",
   POST_TODO: "/todo",

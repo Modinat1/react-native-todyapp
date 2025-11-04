@@ -1,22 +1,40 @@
+import { useGetUser } from "@/api/hooks/user";
 import { Search } from "@/assets";
 import BackButton from "@/components/BackButton";
 import Container from "@/components/Container";
+import Loader from "@/components/Loader";
 import { settingOtherItems, settingsItems } from "@/lib/data";
-import useAuthStore from "@/store/features/useAuthStore";
 import { AntDesign } from "@expo/vector-icons";
 import { useState } from "react";
-import { Image, Switch, Text, View } from "react-native";
+import { Switch, Text, View } from "react-native";
 
 const Settings = () => {
-  const { firstName, image, lastName, username } = useAuthStore();
+  const { data: userProfile, isLoading, isError } = useGetUser();
 
-  const getInitials = (firstName?: string | null, lastName?: string | null) => {
-    if (!firstName && !lastName) return "";
+  if (isLoading) {
+    return <Loader />;
+  }
+  if (isError)
+    return (
+      <Text className="text-center text-lg text-destructive font-medium">
+        Error loading user data
+      </Text>
+    );
 
-    const firstInitial = firstName?.trim()?.charAt(0).toUpperCase() || "";
-    const lastInitial = lastName?.trim()?.charAt(0).toUpperCase() || "";
+  const getInitials = (name?: string) => {
+    if (!name) return "NA";
+    const parts = name.trim().split(" ");
+    return parts.length === 1
+      ? parts[0][0].toUpperCase()
+      : (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
 
-    return `${firstInitial}${lastInitial}`;
+  const capitalizeName = (name?: string) => {
+    if (!name) return "";
+    return name
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
   };
 
   return (
@@ -27,23 +45,31 @@ const Settings = () => {
         <Search />
       </View>
       <View className="justify-center items-center gap-y-3">
-        <View className="bg-[#E0E5ED] rounded-full w-24 h-24 overflow-hidden">
+        {/* <View className="bg-[#E0E5ED] rounded-full w-24 h-24 overflow-hidden">
           <Image
             source={image ? { uri: image } : undefined}
             resizeMode="cover"
             className="w-full h-full"
           />
           {!image && (
-            <Text className="text-lg font-bold">
-              {getInitials(firstName, lastName)}
+            <Text className="text-3xl text-black font-bold capitalize">
+              {getInitials(userProfile?.user?.userName)}
             </Text>
           )}
+        </View>  */}
+
+        <View className="bg-[#E0E5ED] rounded-full w-24 h-24 justify-center items-center">
+          <Text className="text-3xl text-black font-bold capitalize">
+            {getInitials(userProfile?.user?.userName)}
+          </Text>
         </View>
 
         <Text className="text-black text-lg font-medium">
-          {firstName} {lastName}
+          {capitalizeName(userProfile?.user?.userName)}
         </Text>
-        <Text className="text-black text-base font-normal">@{username}</Text>
+        <Text className="text-black text-sm font-normal">
+          {userProfile?.user?.email}
+        </Text>
       </View>
       {settingsItems.map((item) => {
         return (
