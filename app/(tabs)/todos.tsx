@@ -52,15 +52,15 @@ const TodoList = () => {
           onPress={() => fetchNextPage()}
           disabled={isFetchingNextPage}
         >
-          <Text>
+          <View className="mx-auto text-center">
             {isFetchingNextPage ? (
               <Loader />
             ) : (
-              <Text className="text-gray-500 text-center font-semibold text-base">
+              <Text className="text-gray-500 font-semibold text-base">
                 Load more
               </Text>
             )}
-          </Text>
+          </View>
         </TouchableOpacity>
       )}
 

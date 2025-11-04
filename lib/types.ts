@@ -54,6 +54,10 @@ export interface Comment {
   attachments?: attachmentType[];
   createdAt: Date;
   updatedAt: Date;
+  commentId?: {
+    id: string;
+    userName: string;
+  };
 }
 
 export interface CommentsResponse {

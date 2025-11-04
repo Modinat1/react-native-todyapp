@@ -2,6 +2,7 @@ import { useGetComments, usePostComment } from "@/api/hooks/comment";
 import { Attach, SendIcon } from "@/assets";
 import { colors } from "@/colorSettings";
 import { attachmentType } from "@/lib/types";
+import { getInitials } from "@/lib/utils";
 import useAuthStore from "@/store/features/useAuthStore";
 import useCommentStore from "@/store/features/useCommentStore";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
@@ -52,38 +53,12 @@ const Comment = ({
 
   const postComment = usePostComment(todoId);
 
-  // const handleSubmit = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     const token = useCommentStore.getState().token;
-
-  //     await postComment.mutateAsync({
-  //       todoId,
-  //       commenterText: comment,
-  //       attachments,
-  //       token,
-  //     });
-
-  //     setIsLoading(false);
-  //     setComment("");
-  //     setCommentModalVisible(false);
-  //     clearAttachments(todoId);
-
-  //     Toast.show({ type: "success", text1: "Comment added successfully" });
-  //   } catch (err: any) {
-  //     setIsLoading(false);
-  //     const message = err?.message ?? "Error posting comment";
-  //     Toast.show({ type: "error", text1: "Error", text2: message });
-  //   }
-  // };
-
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
       const commenterText = getCommenterText(todoId) || "";
       const todoAttachments = getAttachments(todoId);
-      const token = useAuthStore.getState().token || ""; // or from auth store if needed
-      // const token = useCommentStore.getState().token; // or from auth store if needed
+      const token = useAuthStore.getState().token || "";
 
       await postComment.mutateAsync({
         todoId,
@@ -109,6 +84,8 @@ const Comment = ({
 
   const todoComments = comments?.comments || [];
 
+  // console.log(JSON.stringify(todoComments, null, 2), "comments::::::::");
+
   const playAudio = async (uri: string) => {
     const { sound } = await Audio.Sound.createAsync({ uri });
     await sound.playAsync();
@@ -133,13 +110,6 @@ const Comment = ({
           onRemove={() => clearAttachments(todoId)}
         />
       )}
-
-      {/* {attachments && attachments.length > 0 && (
-        <AttachmentPreviewer
-          attachments={attachments}
-          onRemove={clearAttachments}
-        />
-      )} */}
 
       <View style={styles.actionRow}>
         <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
@@ -193,11 +163,15 @@ const Comment = ({
         renderItem={({ item }) => (
           <View style={styles.commentItem}>
             <View style={styles.avatarContainer}>
-              <Text style={styles.avatarText}>NA</Text>
+              <Text style={styles.avatarText}>
+                {getInitials(item.commenterId.userName)}
+              </Text>
             </View>
 
             <View style={styles.commentContent}>
-              <Text style={styles.commenterName}>commenter name</Text>
+              <Text style={styles.commenterName}>
+                {item.commenterId.userName}
+              </Text>
 
               {item.attachments && item.attachments.length > 0 && (
                 <View style={styles.attachmentsContainer}>

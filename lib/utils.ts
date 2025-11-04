@@ -51,3 +51,10 @@ export const timePickerCustomTheme = {
     backdrop: "rgba(0,0,0,0.3)",
   },
 };
+
+export const getInitials = (name: string) => {
+  if (!name) return "NA";
+  const parts = name.split(" ");
+  const initials = parts.map((part) => part[0].toUpperCase()).join("");
+  return initials;
+};
