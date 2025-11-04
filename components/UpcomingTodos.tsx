@@ -1,15 +1,30 @@
+import { colors } from "@/colorSettings";
 import { Todo } from "@/lib/types";
+import { formatDate, getThemeColor } from "@/lib/utils";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 
-const UpcomingTodos = ({ upcomingTodos }: Todo) => {
+interface UpcomingTodosProps {
+  upcomingTodos: Todo[];
+}
+
+const UpcomingTodos: React.FC<UpcomingTodosProps> = ({ upcomingTodos }) => {
+  const today = new Date();
+
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+
+  const nextDay = new Date(today);
+  nextDay.setDate(today.getDate() + 2);
+
+  const nextAfterDay = new Date(today);
+  nextDay.setDate(today.getDate() + 2);
+
   return (
     <View>
-      {(!upcomingTodos || upcomingTodos.length < 0) && (
-          <Text>No upcoming Todos yet!</Text>
-        ) && (
-          <>
-            {/* -------another upcoming */}
+      {upcomingTodos?.map((todo: Todo) => {
+        return (
+          <View key={todo._id}>
             <View className="flex-row justify-between items-center">
               <View className="flex-row items-center gap-2">
                 <View
@@ -18,7 +33,7 @@ const UpcomingTodos = ({ upcomingTodos }: Todo) => {
                     justifyContent: "center",
                     alignItems: "center",
                     borderWidth: 2,
-                    borderColor: "#18A999",
+                    borderColor: `${getThemeColor(todo.theme)}`,
                     borderRadius: 999,
                     width: 20,
                     height: 20,
@@ -30,12 +45,12 @@ const UpcomingTodos = ({ upcomingTodos }: Todo) => {
                       width: 8,
                       height: 8,
                       borderRadius: 999,
-                      backgroundColor: "#18A999",
+                      backgroundColor: `${getThemeColor(todo.theme)}`,
                     }}
                   />
                 </View>
                 <Text className="text-base font-medium text-black">
-                  Medical Design System
+                  {todo.todoTitle}
                 </Text>
               </View>
               <Feather
@@ -51,15 +66,31 @@ const UpcomingTodos = ({ upcomingTodos }: Todo) => {
                 <MaterialCommunityIcons
                   name="clock-outline"
                   size={16}
-                  color="red"
+                  color={`${
+                    todo.status === "overdue"
+                      ? colors.error.DEFAULT
+                      : todo.status === "pending"
+                      ? "#eab308"
+                      : colors.primary.DEFAULT
+                  }`}
                 />
-                <Text style={styles.time}>08.30 PM</Text>
+                <Text
+                  className={`${
+                    todo.status === "overdue"
+                      ? "text-destructive"
+                      : todo.status === "pending"
+                      ? "text-yellow-500"
+                      : "text-primary"
+                  } text-sm ml-2`}
+                >
+                  {formatDate(todo.createdAt)}
+                </Text>
               </View>
 
               <View className="flex-row justify-between items-center">
                 <View style={styles.iconText}>
                   <Feather name="message-circle" size={14} color="#888" />
-                  <Text style={styles.meta}>0</Text>
+                  <Text style={styles.meta}>{todo.comments.length}</Text>
                 </View>
 
                 <View style={styles.iconText}>
@@ -72,21 +103,20 @@ const UpcomingTodos = ({ upcomingTodos }: Todo) => {
             <View className="border-b border-border w-full my-3"></View>
 
             <Text className="text-secondary text-base font-normal">
-              8, Apr, 2022. Thurday
+              {formatDate(tomorrow)}
             </Text>
             <View className="border-b border-border w-full my-3"></View>
             <Text className="text-secondary text-base font-normal">
-              9, Apr, 2022. Friday
+              {formatDate(nextDay)}
             </Text>
             <View className="border-b border-border w-full my-3"></View>
             <Text className="text-secondary text-base font-normal">
-              10, Apr, 2022. Friday
+              {formatDate(nextAfterDay)}
             </Text>
             <View className="border-b border-border w-full my-3"></View>
-
-            {/* -------another upcoming */}
-          </>
-        )}
+          </View>
+        );
+      })}
     </View>
   );
 };
@@ -146,11 +176,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginRight: 12,
-  },
-  time: {
-    color: "red",
-    fontSize: 12,
-    marginLeft: 4,
   },
   meta: {
     color: "#666",

@@ -1,24 +1,59 @@
+import { months } from "@/lib/data";
 import { AntDesign } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import DropDown from "./DropDown";
 
-export default function WeekPicker() {
-  const [selectedDate, setSelectedDate] = useState(7);
+interface WeekPickerProps {
+  setSelectedMonth: (month: number) => void;
+  setSelectedYear: (year: number) => void;
+  showDropdown: boolean;
+  setShowDropdown: (showDropdown: boolean) => void;
+  selectedMonth: number;
+  selectedYear: number;
+  todoData: { dueDate: string }[];
+}
+export default function WeekPicker({
+  setShowDropdown,
+  showDropdown,
+  selectedYear,
+  selectedMonth,
+  setSelectedYear,
+  setSelectedMonth,
+  todoData,
+}: WeekPickerProps) {
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [weekData, setWeekData] = useState<
+    { day: string; date: number; fullDate: Date }[]
+  >([]);
 
-  const weekData = [
-    { day: "M", date: 5 },
-    { day: "T", date: 6 },
-    { day: "W", date: 7 },
-    { day: "T", date: 8 },
-    { day: "F", date: 9 },
-    { day: "S", date: 10 },
-    { day: "S", date: 11 },
-    { day: "M", date: 12 },
-  ];
+  useEffect(() => {
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay() + 1);
 
-  const currentDay = new Date();
-  const monthName = currentDay.toLocaleString("default", { month: "long" });
-  const year = currentDay.getFullYear();
+    const weekDays = ["M", "T", "W", "T", "F", "S", "S"];
+    const days = weekDays.map((day, index) => {
+      const d = new Date(startOfWeek);
+      d.setDate(startOfWeek.getDate() + index);
+      return {
+        day,
+        date: d.getDate(),
+        fullDate: d,
+      };
+    });
+
+    setWeekData(days);
+  }, []);
+
+  const currentDate = new Date();
+  const isSameDay = (d1: Date, d2: Date) =>
+    d1.getDate() === d2.getDate() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getFullYear() === d2.getFullYear();
+
+  const monthName = currentDate.toLocaleString("default", { month: "long" });
+  const year = currentDate.getFullYear();
   const currentmonthYear = `${monthName}, ${year}`;
 
   return (
@@ -35,14 +70,18 @@ export default function WeekPicker() {
       >
         <TouchableOpacity
           style={{ flexDirection: "row", alignItems: "center" }}
+          onPress={() => setShowDropdown(!showDropdown)}
         >
           <Text style={{ fontSize: 16, fontWeight: "500", marginRight: 5 }}>
-            {currentmonthYear}
+            {selectedMonth != null && selectedYear
+              ? `${months[selectedMonth]}, ${selectedYear}`
+              : currentmonthYear}
           </Text>
+
           <AntDesign name="down" size={14} color="black" />
         </TouchableOpacity>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => setSelectedDate(new Date())}>
           <Text style={{ color: "#18A999", fontWeight: "500" }}>Today</Text>
         </TouchableOpacity>
       </View>
@@ -50,29 +89,31 @@ export default function WeekPicker() {
       {/* Days */}
       <FlatList
         data={weekData}
-        keyExtractor={(item) => item.date.toString()}
+        keyExtractor={(item) => item.fullDate.toISOString()}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={{
           paddingHorizontal: 20,
         }}
         renderItem={({ item }) => {
-          const isSelected = selectedDate === item.date;
+          const isSelected = isSameDay(selectedDate, item.fullDate);
+          const isToday = isSameDay(currentDate, item.fullDate);
+          const active = isSelected || isToday;
+
           return (
             <TouchableOpacity
-              onPress={() => setSelectedDate(item.date)}
+              onPress={() => setSelectedDate(item.fullDate)}
               style={{
                 alignItems: "center",
                 marginHorizontal: 6,
               }}
             >
-              {/* Day label */}
               <Text
                 style={{
                   fontSize: 12,
                   fontWeight: "500",
-                  color: isSelected ? "white" : "#777",
-                  backgroundColor: isSelected ? "#18A999" : "transparent",
+                  color: active ? "white" : "#777",
+                  backgroundColor: active ? "#18A999" : "transparent",
                   paddingHorizontal: 8,
                   paddingVertical: 6,
                   borderTopLeftRadius: 8,
@@ -82,13 +123,12 @@ export default function WeekPicker() {
                 {item.day}
               </Text>
 
-              {/* Date number */}
               <Text
                 style={{
                   fontSize: 14,
                   fontWeight: "600",
-                  color: isSelected ? "white" : "#333",
-                  backgroundColor: isSelected ? "#18A999" : "transparent",
+                  color: active ? "white" : "#333",
+                  backgroundColor: active ? "#18A999" : "transparent",
                   paddingHorizontal: 8,
                   paddingVertical: 4,
                   borderBottomLeftRadius: 8,
@@ -102,13 +142,21 @@ export default function WeekPicker() {
         }}
       />
 
-      {/* Bottom border */}
       <View
         style={{
           height: 1,
           backgroundColor: "#eee",
           marginTop: 10,
         }}
+      />
+      <DropDown
+        selectedMonth={selectedMonth}
+        selectedYear={selectedYear}
+        setShowDropdown={setShowDropdown}
+        showDropdown={showDropdown}
+        setSelectedYear={setSelectedYear}
+        setSelectedMonth={setSelectedMonth}
+        todoData={todoData}
       />
     </View>
   );

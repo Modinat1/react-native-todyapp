@@ -17,6 +17,7 @@ export interface Todo {
   voicenote: any[];
   createdAt: Date;
   updatedAt: Date;
+  dueDate: string;
   comments: [
     {
       _id?: string;

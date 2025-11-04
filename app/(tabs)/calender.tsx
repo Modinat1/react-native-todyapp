@@ -5,6 +5,7 @@ import Container from "@/components/Container";
 import Loader from "@/components/Loader";
 import UpcomingTodos from "@/components/UpcomingTodos";
 import WeekPicker from "@/components/WeekPicker";
+import { useState } from "react";
 import { Text, View } from "react-native";
 
 const Calender = () => {
@@ -17,25 +18,43 @@ const Calender = () => {
     "Saturday",
     "Sunday",
   ];
+
+  const currentDate = new Date();
   const currentDayIndex = new Date().getDay() - 1;
   const currentDayText = weekDays[currentDayIndex];
 
-  const { data, isLoading: upComingTodoIsLoading } = useGetTodos();
+  const [selectedMonth, setSelectedMonth] = useState<number>(
+    currentDate.getMonth()
+  );
+  const [selectedYear, setSelectedYear] = useState<number>(
+    currentDate.getFullYear()
+  );
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  const TodoData = data?.todos || [];
+  const { data, isLoading } = useGetTodos();
 
-  const currentDay = new Date();
+  const TodoData = data?.pages.flatMap((page) => page.todos) || [];
+
+  const formatDate = (date: Date) => date.toISOString().split("T")[0];
+
+  const todayStr = formatDate(new Date());
 
   const upcomingTodos = TodoData?.filter((todo) => {
-    const dueDate = new Date(todo?.dueDate);
+    if (!todo.dueDate) return false;
 
-    return (
-      dueDate?.getFullYear() === currentDay.getFullYear() &&
-      dueDate?.getMonth() === currentDay.getMonth() &&
-      dueDate?.getDate() === currentDay.getDate()
-    );
+    const dueDateStr = formatDate(new Date(todo.dueDate));
+
+    const dueDateObj = new Date(dueDateStr);
+
+    const selectedMonthMatches = dueDateObj.getMonth() === selectedMonth;
+    const selectedYearMatches = dueDateObj.getFullYear() === selectedYear;
+
+    const isTodayOrFuture = dueDateStr >= todayStr;
+
+    return selectedMonthMatches && selectedYearMatches && isTodayOrFuture;
   });
-  console.log(upcomingTodos, "upcomingTodos::::::::");
+
+  // console.log(upcomingTodos, "upcomingTodos::::::::");
 
   return (
     <Container>
@@ -45,7 +64,15 @@ const Calender = () => {
         <Search />
       </View>
 
-      <WeekPicker />
+      <WeekPicker
+        todoData={TodoData}
+        setShowDropdown={setShowDropdown}
+        showDropdown={showDropdown}
+        selectedMonth={selectedMonth}
+        selectedYear={selectedYear}
+        setSelectedYear={setSelectedYear}
+        setSelectedMonth={setSelectedMonth}
+      />
 
       <View className="flex-row justify-between items-center my-3">
         <Text className="text-base font-medium text-black">
@@ -56,7 +83,7 @@ const Calender = () => {
 
       <View className="border-b border-border w-full my-3"></View>
 
-      {upComingTodoIsLoading ? (
+      {isLoading ? (
         <Loader />
       ) : !upcomingTodos || upcomingTodos.length === 0 ? (
         <View className="justify-center items-center mt-20">
