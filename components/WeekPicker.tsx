@@ -1,5 +1,5 @@
 import { AntDesign } from "@expo/vector-icons";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 
 export default function WeekPicker() {
@@ -15,6 +15,11 @@ export default function WeekPicker() {
     { day: "S", date: 11 },
     { day: "M", date: 12 },
   ];
+
+  const currentDay = new Date();
+  const monthName = currentDay.toLocaleString("default", { month: "long" });
+  const year = currentDay.getFullYear();
+  const currentmonthYear = `${monthName}, ${year}`;
 
   return (
     <View style={{ backgroundColor: "white", paddingVertical: 10 }}>
@@ -32,7 +37,7 @@ export default function WeekPicker() {
           style={{ flexDirection: "row", alignItems: "center" }}
         >
           <Text style={{ fontSize: 16, fontWeight: "500", marginRight: 5 }}>
-            April 2022
+            {currentmonthYear}
           </Text>
           <AntDesign name="down" size={14} color="black" />
         </TouchableOpacity>

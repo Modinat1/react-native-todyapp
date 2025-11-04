@@ -1,4 +1,4 @@
-# 📌 TodyApp
+## 📌 TodyApp
 
 A mobile application built with **Expo**, **React Native**, and **React Query** that allows users to create, view, and manage todos.  
 The app features a **tab-based navigation** layout, todo filtering, and a clean, minimal UI styled with **Tailwind CSS**.

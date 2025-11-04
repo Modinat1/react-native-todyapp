@@ -1,11 +1,18 @@
 import { Todo } from "@/lib/types";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { TODO_ENDPOINTS } from "../endpoints";
 import { TodoServices } from "../services/todoServices";
 
 type TodosResponse = {
   todos: Todo[];
   todo: Todo;
+  hasNextPage?: boolean;
+  nextCursor?: boolean;
 };
 
 export const useCreateTodo = () => {
@@ -14,18 +21,42 @@ export const useCreateTodo = () => {
   });
 };
 
-export const useGetTodos = (params?: Record<string, any>) =>
-  useQuery<TodosResponse>({
-    queryKey: ["todos", params],
-    queryFn: async () => {
-      const res = await TodoServices.getTodos(params);
+export const useGetTodos = () =>
+  useInfiniteQuery<TodosResponse>({
+    queryKey: ["todos"],
+
+    initialPageParam: null,
+
+    queryFn: async ({ pageParam = null }) => {
+      const res = await TodoServices.getTodos(
+        pageParam ? { cursor: pageParam } : {}
+      );
       return res.data;
     },
-    refetchOnWindowFocus: true, // refetch on focus
-    refetchOnReconnect: true, // refetch on reconnect
-    refetchInterval: 5000, // optional: poll every 5s
+
+    getNextPageParam: (lastPage) => {
+      // lastPage is the last fetched response (TodosResponse)
+      return lastPage.hasNextPage ? lastPage.nextCursor : undefined;
+    },
+
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    refetchInterval: 5000,
     staleTime: 0,
   });
+
+// export const useGetTodos = (cursor?: Record<string, any>) =>
+//   useQuery<TodosResponse>({
+//     queryKey: ["todos", cursor],
+//     queryFn: async () => {
+//       const res = await TodoServices.getTodos(cursor);
+//       return res.data;
+//     },
+//     refetchOnWindowFocus: true, // refetch on focus
+//     refetchOnReconnect: true, // refetch on reconnect
+//     refetchInterval: 5000, // optional: poll every 5s
+//     staleTime: 0,
+//   });
 
 export const useGetTodo = (todoId: string) =>
   useQuery<TodosResponse>({

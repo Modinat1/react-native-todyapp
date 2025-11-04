@@ -69,6 +69,8 @@ const Login = () => {
       return;
     }
     setError("");
+    console.log("logging in::::::");
+
     await mutateAsync({ email: email, password });
   };
 

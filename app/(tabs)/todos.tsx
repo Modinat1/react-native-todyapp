@@ -6,18 +6,24 @@ import Container from "@/components/Container";
 import { colors } from "@/colorSettings";
 import Card from "@/components/Card";
 
+import Loader from "@/components/Loader";
 import { useRouter } from "expo-router";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 
 const TodoList = () => {
   const router = useRouter();
 
-  const { data, isLoading } = useGetTodos();
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+  } = useGetTodos();
 
+  const TodoData = data?.pages.flatMap((page) => page.todos) || [];
   // console.log("USER TODOS:::::::", JSON.stringify(data, null, 2));
-
-  const TodoData = data?.todos || [];
-
   return (
     <Container>
       <View className="flex-row justify-between items-center my-5">
@@ -39,6 +45,30 @@ const TodoList = () => {
         </View>
       ) : (
         <Card data={TodoData} />
+      )}
+
+      {hasNextPage && (
+        <TouchableOpacity
+          onPress={() => fetchNextPage()}
+          disabled={isFetchingNextPage}
+        >
+          <Text>
+            {isFetchingNextPage ? (
+              <Loader />
+            ) : (
+              <Text className="text-gray-500 text-center font-semibold text-base">
+                Load more
+              </Text>
+            )}
+          </Text>
+        </TouchableOpacity>
+      )}
+
+      {isError && (
+        <Text className="text-destructive text-center font-semibold text-base">
+          {" "}
+          Error fetching todos
+        </Text>
       )}
 
       <TouchableOpacity onPress={() => router.push("/(tabs)/home")}>
