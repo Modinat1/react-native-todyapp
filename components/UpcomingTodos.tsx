@@ -2,13 +2,16 @@ import { colors } from "@/colorSettings";
 import { Todo } from "@/lib/types";
 import { formatDate, getThemeColor } from "@/lib/utils";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
-import { StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import EditDateTime from "./EditDateTime";
 
 interface UpcomingTodosProps {
   upcomingTodos: Todo[];
 }
 
 const UpcomingTodos: React.FC<UpcomingTodosProps> = ({ upcomingTodos }) => {
+  const [openEditDateTimeModal, setOpenEditDateTimeModal] = useState(false);
   const today = new Date();
 
   const tomorrow = new Date(today);
@@ -53,12 +56,15 @@ const UpcomingTodos: React.FC<UpcomingTodosProps> = ({ upcomingTodos }) => {
                   {todo.todoTitle}
                 </Text>
               </View>
-              <Feather
-                name="more-horizontal"
-                size={18}
-                color="#767E8C"
-                style={{ marginLeft: "auto" }}
-              />
+
+              <TouchableOpacity onPress={() => setOpenEditDateTimeModal(true)}>
+                <Feather
+                  name="more-horizontal"
+                  size={18}
+                  color="#767E8C"
+                  style={{ marginLeft: "auto" }}
+                />
+              </TouchableOpacity>
             </View>
 
             <View className="flex-row justify-between items-center mt-3">
@@ -114,6 +120,15 @@ const UpcomingTodos: React.FC<UpcomingTodosProps> = ({ upcomingTodos }) => {
               {formatDate(nextAfterDay)}
             </Text>
             <View className="border-b border-border w-full my-3"></View>
+            {/* ----------- */}
+            {openEditDateTimeModal && (
+              <EditDateTime
+                openEditDateTimeModal={openEditDateTimeModal}
+                setOpenEditDateTimeModal={setOpenEditDateTimeModal}
+                todoId={todo._id}
+              />
+            )}
+            {/* ----------- */}
           </View>
         );
       })}

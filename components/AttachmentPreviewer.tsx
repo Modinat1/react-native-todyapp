@@ -27,7 +27,7 @@ const AttachmentPreviewer = ({
   };
 
   return (
-    <View className="w-[50%] relative">
+    <View className="w-[89%] relative">
       <View className="w-7 h-7 absolute -top-3 -right-3 z-10 bg-secondary-foreground flex-row justify-center items-center rounded-full">
         <TouchableOpacity
           onPress={() => onRemove?.()}

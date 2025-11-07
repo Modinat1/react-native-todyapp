@@ -18,6 +18,7 @@ export interface Todo {
   createdAt: Date;
   updatedAt: Date;
   dueDate: string;
+  dueTime: Date;
   comments: [
     {
       _id?: string;
