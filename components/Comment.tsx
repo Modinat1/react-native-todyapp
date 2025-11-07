@@ -1,6 +1,4 @@
 import { useGetComments, usePostComment } from "@/api/hooks/comment";
-import { Attach, SendIcon } from "@/assets";
-import { colors } from "@/colorSettings";
 import { attachmentType } from "@/lib/types";
 import { getInitials } from "@/lib/utils";
 import useAuthStore from "@/store/features/useAuthStore";
@@ -8,18 +6,10 @@ import useCommentStore from "@/store/features/useCommentStore";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import { Audio } from "expo-av";
 import { useState } from "react";
-import {
-  ActivityIndicator,
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
-import AttachmentPreviewer from "./AttachmentPreviewer";
 import AudioWaveForm from "./AudioWaveForm";
+import CommentHeader from "./CommentHeader";
 import Loader from "./Loader";
 
 interface CommentProps {
@@ -49,20 +39,20 @@ const Comment = ({
 
   const [isLoading, setIsLoading] = useState(false);
   const { data: comments, isLoading: commentLoading } = useGetComments(todoId);
-  const [error, setError] = useState("");
 
+  const [localComment, setLocalComment] = useState(comment || "");
+  const error = "";
   const postComment = usePostComment(todoId);
 
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const commenterText = getCommenterText(todoId) || "";
       const todoAttachments = getAttachments(todoId);
       const token = useAuthStore.getState().token || "";
 
       await postComment.mutateAsync({
         todoId,
-        commenterText,
+        commenterText: localComment,
         attachments: todoAttachments,
         token,
       });
@@ -70,6 +60,8 @@ const Comment = ({
       // Reset
       clearAttachments(todoId);
       setCommenterText(todoId, "");
+      setLocalComment("");
+
       setCommentModalVisible(false);
 
       Toast.show({ type: "success", text1: "Comment added successfully" });
@@ -91,59 +83,6 @@ const Comment = ({
     await sound.playAsync();
   };
 
-  // Header component for FlatList
-  const ListHeaderComponent = () => (
-    <View style={styles.headerContainer}>
-      <TextInput
-        placeholder="Enter comment..."
-        value={comment}
-        onChangeText={(text) => setCommenterText(todoId, text)}
-        // onChangeText={setComment}
-        style={styles.input}
-        placeholderTextColor="#A9B0C5"
-        multiline
-      />
-
-      {attachments.length > 0 && (
-        <AttachmentPreviewer
-          attachments={attachments}
-          onRemove={() => clearAttachments(todoId)}
-        />
-      )}
-
-      <View style={styles.actionRow}>
-        <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
-          <Attach />
-        </TouchableOpacity>
-
-        <TouchableOpacity disabled={isLoading} onPress={handleSubmit}>
-          {postComment.isPending ? (
-            <ActivityIndicator color={colors.primary.DEFAULT} size={20} />
-          ) : (
-            <SendIcon />
-          )}
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.emojiContainer}>
-        <Text style={styles.emoji}>😊</Text>
-        <Text style={styles.emoji}>😂</Text>
-        <Text style={styles.emoji}>😇</Text>
-        <Text style={styles.emoji}>🙌</Text>
-        <Text style={styles.emoji}>👋</Text>
-        <Text style={styles.emoji}>😨</Text>
-        <Text style={styles.emoji}>✌️</Text>
-        <Text style={styles.emoji}>💪</Text>
-      </View>
-
-      {todoComments.length > 0 && (
-        <Text style={styles.commentsTitle}>
-          Comments ({todoComments.length})
-        </Text>
-      )}
-    </View>
-  );
-
   if (commentLoading) {
     return (
       <View style={styles.loadingContainer}>
@@ -158,19 +97,33 @@ const Comment = ({
         data={todoComments}
         keyExtractor={(item) => item._id}
         contentContainerStyle={{ paddingBottom: 10 }}
-        ListHeaderComponent={ListHeaderComponent}
+        ListHeaderComponent={
+          <CommentHeader
+            localComment={localComment}
+            setLocalComment={setLocalComment}
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+            todoId={todoId}
+            todoComments={todoComments}
+            attachments={attachments}
+            clearAttachments={clearAttachments}
+            handleSubmit={handleSubmit}
+            isLoading={isLoading}
+            postComment={postComment}
+          />
+        }
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <View style={styles.commentItem}>
             <View style={styles.avatarContainer}>
               <Text style={styles.avatarText}>
-                {getInitials(item.commenterId.userName)}
+                {getInitials(item?.commenterId?.userName || "User")}
               </Text>
             </View>
 
             <View style={styles.commentContent}>
               <Text style={styles.commenterName}>
-                {item.commenterId.userName}
+                {item?.commenterId?.userName}
               </Text>
 
               {item.attachments && item.attachments.length > 0 && (
@@ -240,16 +193,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  headerContainer: {
-    marginBottom: 16,
-  },
-  input: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    paddingVertical: 8,
-    fontSize: 16,
-    minHeight: 40,
-  },
+
   actionRow: {
     flexDirection: "row",
     justifyContent: "space-between",

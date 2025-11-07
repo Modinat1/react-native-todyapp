@@ -48,13 +48,13 @@ export type attachmentType = {
 };
 export interface Comment {
   _id: string;
-  commenterId: string;
+  // commenterId: string;
   commenterText: string;
   todoId: string;
   attachments?: attachmentType[];
   createdAt: Date;
   updatedAt: Date;
-  commentId?: {
+  commenterId?: {
     id: string;
     userName: string;
   };
@@ -62,4 +62,10 @@ export interface Comment {
 
 export interface CommentsResponse {
   comments: Comment[];
+}
+
+export interface EmojiUsage {
+  emoji: string;
+  count: number;
+  lastUsed: number;
 }

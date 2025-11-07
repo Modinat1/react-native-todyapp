@@ -252,6 +252,9 @@ export const GlobalBottomSheet = () => {
             opacity={0.5}
           />
         )}
+        keyboardBehavior="interactive"
+        keyboardBlurBehavior="restore"
+        android_keyboardInputMode="adjustResize"
       >
         {commentContent}
       </BottomSheetModal>
