@@ -15,6 +15,7 @@ import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Entypo from "@expo/vector-icons/Entypo";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useState } from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -125,7 +126,7 @@ const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
             </Text>
           </View>
 
-          <Text className="text-secondary font-normal text-sm leading-8">
+          <Text className="text-secondary font-normal text-base leading-8">
             {todoData?.description}
           </Text>
 
@@ -143,16 +144,24 @@ const ViewTodoModal = ({ onClose, todoId }: ViewTodoModalProps) => {
 
             <View className="flex-row items-center gap-3">
               <TouchableOpacity onPress={() => setOpenEditModal(true)}>
-                <Text>Edit</Text>
+                <AntDesign
+                  name="edit"
+                  size={20}
+                  color={colors.primary.DEFAULT}
+                />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setOpenDeleteModal(true)}>
-                <Text>Delete</Text>
+                <MaterialIcons
+                  name="delete-outline"
+                  size={20}
+                  color={colors.error.DEFAULT}
+                />
               </TouchableOpacity>
             </View>
           </View>
 
           {todoData?.status === "overdue" && (
-            <Text className="text-destructive">
+            <Text className="text-destructive my-5">
               Complete your task, this task is overdue 🙄
             </Text>
           )}

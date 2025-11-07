@@ -14,12 +14,12 @@ const Boards = () => {
   // const { userId } = useAuthStore();
   const { data, isLoading } = useGetTodos();
   // const { data, isLoading } = useGetUserTodos(userId ?? 0);
-  const [filter, setFilter] = useState<"inProgress" | "completed">(
+  const [filter, setFilter] = useState<"inProgress" | "completed" | "overdue">(
     "inProgress"
   );
   const [menuVisible, setMenuVisible] = useState(false);
 
-  const TodoData = data?.todos || [];
+  const TodoData = data?.pages.flatMap((page) => page.todos) || [];
 
   const inProgressTodo = TodoData.filter(
     (todo: Todo) => todo.status === "pending"
@@ -27,9 +27,16 @@ const Boards = () => {
   const completedTodo = TodoData.filter(
     (todo: Todo) => todo.status === "completed"
   );
+  const overdueTodo = TodoData.filter(
+    (todo: Todo) => todo.status === "overdue"
+  );
 
   const displayedTodos =
-    filter === "inProgress" ? inProgressTodo : completedTodo;
+    filter === "inProgress"
+      ? inProgressTodo
+      : filter === "completed"
+      ? completedTodo
+      : overdueTodo;
 
   return (
     <Container>
@@ -87,6 +94,18 @@ const Boards = () => {
           >
             <Text style={{ color: colors.primary.DEFAULT, fontWeight: "600" }}>
               Completed
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
+              setFilter("overdue");
+              setMenuVisible(false);
+            }}
+            style={{ paddingVertical: 8 }}
+          >
+            <Text style={{ color: colors.primary.DEFAULT, fontWeight: "600" }}>
+              Overdue
             </Text>
           </TouchableOpacity>
         </View>

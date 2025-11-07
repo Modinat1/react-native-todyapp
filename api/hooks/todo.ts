@@ -5,7 +5,6 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { TODO_ENDPOINTS } from "../endpoints";
 import { TodoServices } from "../services/todoServices";
 
 type TodosResponse = {
@@ -76,7 +75,6 @@ export const useUpdateTodo = (todoId: string) => {
 
   return useMutation({
     mutationFn: async (data: Partial<Todo>) => {
-      console.log("PATCHing:", TODO_ENDPOINTS.UPDATE_TODO(todoId), data);
       const res = await TodoServices.updateTodo(todoId, data);
       return res.data;
     },

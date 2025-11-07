@@ -1,5 +1,4 @@
 import { useDeleteTodo } from "@/api/hooks/todo";
-import { colors } from "@/colorSettings";
 import { Todo } from "@/lib/types";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import {
@@ -31,7 +30,7 @@ const DeleteTodoModal: React.FC<DeleteTodoModalProps> = ({
       await mutateAsync();
       Toast.show({
         type: "success",
-        text1: "Todo updated successfully!",
+        text1: "Todo deleted successfully!",
         visibilityTime: 2000,
       });
       setOpenDeleteModal(false);
@@ -58,27 +57,33 @@ const DeleteTodoModal: React.FC<DeleteTodoModalProps> = ({
         {/* <View className="flex-1 bg-black/40 justify-center items-center"> */}
         {/* Modal content */}
         <View className="bg-white w-[90%] rounded-2xl p-6 shadow-3xl">
-          <View className="flex-row justify-between items-center">
-            <Text className="text-lg font-semibold mb-3">Delete Todo</Text>
-            <TouchableOpacity onPress={() => setOpenDeleteModal(false)}>
+          <View className="relative items-center mb-3">
+            <Text className="text-lg font-semibold text-center">
+              Delete Todo
+            </Text>
+
+            <TouchableOpacity
+              onPress={() => setOpenDeleteModal(false)}
+              className="absolute right-0"
+            >
               <AntDesign name="close" size={24} color="black" />
             </TouchableOpacity>
           </View>
 
-          <Text>
-            Are you sure you want to delete task {`"${todo.todoTitle}"`}?
+          <Text className="text-center mt-3">
+            Are you sure you want to delete task{" "}
+            <Text className="font-semibold">{`"${todo.todoTitle}"`}?</Text>
           </Text>
 
           <TouchableOpacity
             disabled={isPending}
             onPress={handleDeleteTodo}
-            className={`rounded-md py-3 mt-10 ${
-              isPending ? "bg-gray-400" : "bg-primary"
-            }`}
+            className="bg-destructive rounded-md py-3 mt-10"
+            // className="bg-primary rounded-md py-3 mt-10"
           >
             <Text className="text-center text-white font-medium">
               {isPending ? (
-                <ActivityIndicator color={colors.primary.DEFAULT} />
+                <ActivityIndicator color="#ffffff" />
               ) : (
                 "Yes, Delete"
               )}

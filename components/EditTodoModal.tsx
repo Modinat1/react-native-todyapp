@@ -1,5 +1,4 @@
 import { useUpdateTodo } from "@/api/hooks/todo";
-import { colors } from "@/colorSettings";
 import { Todo } from "@/lib/types";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useEffect, useState } from "react";
@@ -27,7 +26,7 @@ const EditTodoModal: React.FC<EditTodoModalProps> = ({
   onCloseViewTodoModal,
 }) => {
   const { mutateAsync, isPending } = useUpdateTodo(todo?._id);
-  console.log(todo, "todo::");
+  // console.log(todo, "todo::");
 
   const [title, setTitle] = useState(todo?.todoTitle || "");
   const [description, setDescription] = useState(todo?.description || "");
@@ -72,10 +71,15 @@ const EditTodoModal: React.FC<EditTodoModalProps> = ({
       {/* Overlay */}
       <View className="flex-1 bg-black/40 justify-center items-center">
         {/* Modal content */}
-        <View className="w-[90%] rounded-2xl p-6 shadow-3xl">
-          <View className="flex-row justify-between items-center">
-            <Text className="text-lg font-semibold mb-3">Edit Todo</Text>
-            <TouchableOpacity onPress={() => setOpenEditModal(false)}>
+        <View className=" bg-white w-[90%] rounded-2xl p-6 shadow-3xl">
+          <View className="realtive items-center mb-3">
+            <Text className="text-lg text-center font-semibold mb-3">
+              Edit Todo
+            </Text>
+            <TouchableOpacity
+              className="absolute right-0"
+              onPress={() => setOpenEditModal(false)}
+            >
               <AntDesign name="close" size={24} color="black" />
             </TouchableOpacity>
           </View>
@@ -104,16 +108,10 @@ const EditTodoModal: React.FC<EditTodoModalProps> = ({
           <TouchableOpacity
             disabled={isPending}
             onPress={handleUpdateTodo}
-            className={`rounded-md py-3 mt-10 ${
-              isPending ? "bg-gray-400" : "bg-primary"
-            }`}
+            className="rounded-md py-3 mt-10 bg-primary"
           >
             <Text className="text-center text-white font-medium">
-              {isPending ? (
-                <ActivityIndicator color={colors.primary.DEFAULT} />
-              ) : (
-                "Save Changes"
-              )}
+              {isPending ? <ActivityIndicator color="fff" /> : "Save Changes"}
             </Text>
           </TouchableOpacity>
         </View>
