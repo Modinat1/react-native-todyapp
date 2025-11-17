@@ -16,6 +16,27 @@ export const formatTime = (timeString?: Date) => {
   });
 };
 
+export const formatTime2 = (timeString?: Date | string) => {
+  if (!timeString) return "No time";
+
+  let time: Date;
+
+  if (typeof timeString === "string") {
+    // Parsing to "HH:MM" format
+    const [hours, minutes] = timeString.split(":").map(Number);
+    time = new Date();
+    time.setHours(hours, minutes, 0, 0);
+  } else {
+    time = new Date(timeString);
+  }
+
+  return time.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
+
 export const formatDate = (dateString?: Date) => {
   if (!dateString) return "No Date";
   const date = new Date(dateString);

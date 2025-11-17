@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import { colors } from "@/colorSettings";
 import { useEmojiTracker } from "@/lib/hooks";
-// import { formatTime } from "@/lib/utils";
+import { formatTime2 } from "@/lib/utils";
 import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import { useState } from "react";
 import {
@@ -187,8 +187,7 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
             <ClockIcon />
 
             <Text className="text-[#A9B0C5]">
-              Enter due time
-              {/* {dueTime ? formatTime(dueTime) : "Enter due Time"} */}
+              {dueTime ? formatTime2(dueTime) : "Enter due Time"}
             </Text>
           </TouchableOpacity>
 
