@@ -3,7 +3,13 @@ import { Todo } from "@/lib/types";
 import { formatDate, getThemeColor } from "@/lib/utils";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import EditDateTime from "./EditDateTime";
 
 interface UpcomingTodosProps {
@@ -24,7 +30,10 @@ const UpcomingTodos: React.FC<UpcomingTodosProps> = ({ upcomingTodos }) => {
   nextDay.setDate(today.getDate() + 2);
 
   return (
-    <View>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 20 }}
+    >
       {upcomingTodos?.map((todo: Todo) => {
         return (
           <View key={todo._id}>
@@ -132,7 +141,7 @@ const UpcomingTodos: React.FC<UpcomingTodosProps> = ({ upcomingTodos }) => {
           </View>
         );
       })}
-    </View>
+    </ScrollView>
   );
 };
 

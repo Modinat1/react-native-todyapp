@@ -9,8 +9,8 @@ interface TimeObject {
 interface TimePickerProps {
   openTimeModal: boolean;
   setOpenTimeModal: (open: boolean) => void;
-  dueTime?: Date;
-  setDueTime?: (dueTime: Date) => void;
+  dueTime?: Date | string;
+  setDueTime?: (dueTime: Date | string) => void;
 }
 
 const TimePicker = ({
@@ -22,12 +22,14 @@ const TimePicker = ({
   const onConfirm = ({ hours, minutes }: TimeObject) => {
     setOpenTimeModal(false);
 
-    const newDueTime = new Date(dueTime ?? new Date());
-    newDueTime.setHours(hours, minutes, 0, 0);
+    const localTimeString = `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}`;
 
-    setDueTime?.(newDueTime);
+    setDueTime?.(localTimeString);
   };
-  console.log(dueTime);
+
+  console.log("dueTime::::", dueTime);
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>

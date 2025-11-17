@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 
 import { colors } from "@/colorSettings";
 import { useEmojiTracker } from "@/lib/hooks";
-import { formatTime } from "@/lib/utils";
+// import { formatTime } from "@/lib/utils";
 import { useBottomSheetStore } from "@/store/features/useBottomSheetStore";
 import { useState } from "react";
 import {
@@ -111,8 +111,10 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
       dueDate: dueDate,
       dueTime: dueTime,
     };
+    // console.log("payload:::::::", payload);
 
     await mutateAsync(payload);
+    setDueTime(new Date());
   };
 
   const showDatePicker = () => {
@@ -183,8 +185,10 @@ export default function AddTodoModal({ visible, onClose }: AddTodoModalProps) {
             onPress={() => setOpenTimeModal(true)}
           >
             <ClockIcon />
+
             <Text className="text-[#A9B0C5]">
-              {dueTime ? formatTime(dueTime) : "Due Time"}
+              Enter due time
+              {/* {dueTime ? formatTime(dueTime) : "Enter due Time"} */}
             </Text>
           </TouchableOpacity>
 
